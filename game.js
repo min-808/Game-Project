@@ -15,7 +15,7 @@ function hitbox() {
         this.xPos = player.xPos;
         this.yPos = player.yPos;
     }
-}
+} // hi
 
 function player() {
     this.width = 80;
