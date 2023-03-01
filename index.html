@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="p5.js"></script>
+    <script src="game.js"></script>
+    <script defer src="https://unpkg.com/p5.collide2d"></script>
+    <title>Game Project</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <script>
+
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+
+        // Declare the player object
+        var player = new player();
+        var hitbox = new hitbox();
+        var enemy = new enemy();
+
+        function setup() {
+            frameRate(60);
+            createCanvas(w,h);
+            knight = loadImage("knight.png");
+            snake = loadImage("snake.png");
+        }
+
+        function draw() {
+            clear();
+
+            enemy.show();
+            enemy.update();
+
+            player.show();
+            player.update();
+
+            hitbox.show();
+            hitbox.update();
+
+            if (keyIsDown(UP_ARROW)) {
+                player.up();
+            }
+            if (keyIsDown(DOWN_ARROW)) {
+                player.down();
+            }
+            if (keyIsDown(LEFT_ARROW)) {
+                player.left();
+            }
+            if (keyIsDown(RIGHT_ARROW)) {
+                player.right();
+            }
+        }
+
+    </script>
+</body>
+</html>
