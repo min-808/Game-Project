@@ -27,11 +27,13 @@
         function setup() {
             frameRate(60);
             createCanvas(w,h);
+            angleMode(DEGREES);
             knight = loadImage("knight.png");
             snake = loadImage("snake.png");
         }
 
         function draw() {
+            
             clear();
 
             let ms = millis();
@@ -64,14 +66,19 @@
                 player.right();
             }
 
+            if (keyIsPressed) {
+                if (key === 'c') {
+                    weapon.show();
+                }
+            }
+            
         }
 
-        function keyTyped() {
-            if (key == "c") {
-                weapon.show();
-                weapon.swing();
-            }
-        }
+        //function keyTyped() {
+            //if (key === "c") {
+                //weapon.show();
+            //}
+        //}
 
     </script>
 </body>

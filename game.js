@@ -55,22 +55,32 @@ function weapon() {
     this.width = 90;
     this.height = 20;
 
-    this.xPos = 0;
-    this.yPos = 0;
+    this.xPos = 200;
+    this.yPos = 200;
+
+    this.turn = 0;
 
     this.show = function() {
-        this.xPos = player.xPos;
-        this.yPos = player.yPos;
+        fill(0, 0, 0);
+        rectMode(CORNER)
+        rect(player.xPos -/* + */ player.width, player.yPos + player.height, this.width, this.height);
 
-        noStroke();
-        fill("red");
-        rect(300,300,300,300);
+        this.turn += 5;
+
+        //rotate(this.turn);
+        translate(100,100)
+
+        console.log("hi");
         
     }
 
-    this.swing = function() {
-        //
+    this.unpause = function() {
+        this.turn = 0;
     }
+
+    //this.swing = function() {
+        //
+    //}
 }
 
 function enemy() {
