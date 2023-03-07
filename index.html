@@ -22,6 +22,7 @@
         var player = new player();
         var hitbox = new hitbox();
         var enemy = new enemy();
+        var weapon = new weapon();
 
         function setup() {
             frameRate(60);
@@ -32,6 +33,14 @@
 
         function draw() {
             clear();
+
+            let ms = millis();
+
+            //while
+
+            if (ms > 800) {
+                //
+            }
 
             enemy.show();
             enemy.update();
@@ -53,6 +62,14 @@
             }
             if (keyIsDown(RIGHT_ARROW)) {
                 player.right();
+            }
+
+        }
+
+        function keyTyped() {
+            if (key == "c") {
+                weapon.show();
+                weapon.swing();
             }
         }
 

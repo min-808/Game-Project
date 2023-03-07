@@ -51,6 +51,28 @@ function player() {
     
 }
 
+function weapon() {
+    this.width = 90;
+    this.height = 20;
+
+    this.xPos = 0;
+    this.yPos = 0;
+
+    this.show = function() {
+        this.xPos = player.xPos;
+        this.yPos = player.yPos;
+
+        noStroke();
+        fill("red");
+        rect(300,300,300,300);
+        
+    }
+
+    this.swing = function() {
+        //
+    }
+}
+
 function enemy() {
 
     this.width = 80;
@@ -73,8 +95,7 @@ function enemy() {
 
         if (hit == true) {
             console.log("within hitbox");
-            this.xPos += random(-5, 5)
-            this.yPos += random(-5, 5)
+            //
         }
 
         
