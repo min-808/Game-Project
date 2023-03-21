@@ -4,6 +4,7 @@
     <script src="p5.js"></script>
     <script src="game.js"></script>
     <script defer src="https://unpkg.com/p5.collide2d"></script>
+    <link rel="stylesheet" href="style.css">
     <title>Game Project</title>
     <style>
         body {
@@ -13,10 +14,14 @@
     </style>
 </head>
 <body>
+    <span id="staminaTitle">Stamina: </span><span id="staminaValue">placeholder</span>
     <script>
 
         let w = window.innerWidth;
         let h = window.innerHeight;
+
+        var stamina = 60;
+        document.getElementById("staminaValue").innerText = stamina;
 
         // Declare the player object
         var player = new player();
@@ -66,10 +71,13 @@
                 player.right();
             }
 
-            if (keyIsPressed) {
-                if (key === 'c') {
-                    weapon.show();
-                }
+            if (keyIsDown(67)) {
+                weapon.show();
+                weapon.update();
+            }
+
+            if (!keyIsDown(67)) {
+                weapon.reset();
             }
             
         }

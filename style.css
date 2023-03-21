@@ -4,3 +4,12 @@ body {
     border: 0;
     overflow: hidden;
 }
+
+#staminaTitle {
+    font-size: 40px;
+}
+
+#staminaValue {
+    font-size: 40px;
+    font-weight: bold;
+}
