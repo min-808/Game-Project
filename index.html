@@ -7,10 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <title>Game Project</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-        }
     </style>
 </head>
 <body>
@@ -21,7 +17,6 @@
         let h = window.innerHeight;
 
         var stamina = 60;
-        document.getElementById("staminaValue").innerText = stamina;
 
         // Declare the player object
         var player = new player();
@@ -40,13 +35,19 @@
         function draw() {
             
             clear();
+            document.getElementById("staminaValue").innerText = stamina.toFixed(0);
 
-            let ms = millis();
+            let seconds = (millis() / 1000).toFixed(0);
+
+            //if (seconds % 2 == 0) {
+                //stamina += 1;
+            //}
+            
 
             //while
 
-            if (ms > 800) {
-                //
+            if (stamina >= 60) {
+                stamina = 60;
             }
 
             enemy.show();
@@ -60,15 +61,19 @@
 
             if (keyIsDown(UP_ARROW)) {
                 player.up();
+                pos = "up";
             }
             if (keyIsDown(DOWN_ARROW)) {
                 player.down();
+                pos = "down";
             }
             if (keyIsDown(LEFT_ARROW)) {
                 player.left();
+                pos = "left";
             }
             if (keyIsDown(RIGHT_ARROW)) {
                 player.right();
+                pos = "right";
             }
 
             if (keyIsDown(67)) {
@@ -76,9 +81,6 @@
                 weapon.update();
             }
 
-            if (!keyIsDown(67)) {
-                weapon.reset();
-            }
             
         }
 

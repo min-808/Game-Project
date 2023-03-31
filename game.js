@@ -52,29 +52,45 @@ function player() {
 }
 
 function weapon() {
-    this.width = 90;
-    this.height = 20;
+    this.width = 100;
+    this.height = 10;
 
     this.xPos = player.xPos;
     this.yPos = player.yPos;
 
-    this.rot = 0;
+    this.rRot = -90;
+    this.lRot = -180;
+    this.uRot = 180;
+    this.dRot = 360;
+
+    this.speed = 7;
+
+    this.opacity = 0;
 
     this.show = function() {
-        rectMode(CORNER)
-        this.rot+=15
-        translate(player.xPos + player.height, player.yPos + player.width)
-        rotate(this.rot)
-        fill(0, 0, 0);
+        rectMode(CORNER);
+        this.rRot += this.speed;
+        translate(player.xPos + player.height, player.yPos + player.width);
+        rotate(this.rRot);
+        translate(0,-100)
+
+        fill(135,135,135, this.opacity);
+        this.opacity += 20;
+        noStroke();
         rect(0, 0, this.width, this.height);
+        stroke(0,0,0)
 
-        console.log(this.rot)
+        console.log(this.dRot);
 
-        stamina--;
-        console.log(stamina)
+        stamina-=0.1
 
-        if (this.rot >= 360) {
+        if (this.rRot >= 340) {
             this.reset();
+            this.opacity = 0;
+        }
+
+        if (stamina <= 0) {
+            stamina = 0;
         }
     }
 
@@ -82,11 +98,6 @@ function weapon() {
         this.xPos = player.xPos;
         this.yPos = player.yPos;
     }
-
-    this.reset = function() {
-        this.rot = 0;
-    }
-    
 
     //this.swing = function() {
         //
