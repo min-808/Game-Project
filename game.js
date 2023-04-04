@@ -82,21 +82,60 @@ function weapon() {
 
         console.log(this.dRot);
 
-        stamina-=0.1
-
-        if (this.rRot >= 340) {
-            this.reset();
-            this.opacity = 0;
-        }
+        stamina -= 0.1;
 
         if (stamina <= 0) {
             stamina = 0;
+        }
+
+        if (stamina >= 60) {
+            stamina = 60;
+        }
+
+        if (this.opacity <= 0) {
+            this.opacity = 0;
+        }
+
+        if (this.opacity >= 300) {
+            this.opacity = 300;
         }
     }
 
     this.update = function() {
         this.xPos = player.xPos;
         this.yPos = player.yPos;
+    }
+
+    this.fade = function() {
+        rectMode(CORNER)
+        translate(player.xPos + player.height, player.yPos + player.width);
+        rotate(this.rRot);
+        translate(0,-100)
+
+        this.opacity -= 20;
+
+        fill(135,135,135, this.opacity);
+        noStroke();
+        rect(0, 0, this.width, this.height);
+        stroke(0,0,0)
+
+        stamina += 0.1;
+
+        if (stamina <= 0) {
+            stamina = 0;
+        }
+
+        if (stamina >= 60) {
+            stamina = 60;
+        }
+
+        if (this.opacity <= 0) {
+            this.opacity = 0;
+        }
+
+        if (this.opacity >= 300) {
+            this.opacity = 300;
+        }
     }
 
     //this.swing = function() {
