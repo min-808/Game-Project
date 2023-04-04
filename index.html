@@ -17,6 +17,7 @@
         let h = window.innerHeight;
 
         var stamina = 60;
+        var hit = false;
 
         // Declare the player object
         var player = new player();
@@ -84,6 +85,11 @@
             if (!keyIsDown(67)) {
                 weapon.fade();
             }
+
+            //hit = collideRectRect(enemy.xPos, enemy.yPos, enemy.width, enemy.height, player.xPos + player.height, player.yPos + player.width, weapon.width, weapon.height)
+            //console.log(hit)
+
+            //implement collisions with image and moving sword
             
         }
 

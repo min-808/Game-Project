@@ -119,7 +119,7 @@ function weapon() {
         rect(0, 0, this.width, this.height);
         stroke(0,0,0)
 
-        stamina += 0.1;
+        stamina += 0.08;
 
         if (stamina <= 0) {
             stamina = 0;
