@@ -10,7 +10,10 @@
     </style>
 </head>
 <body>
-    <span id="staminaTitle">Stamina: </span><span id="staminaValue">placeholder</span>
+    <span id="staminaTitle">Stamina: <span id="staminaValue">placeholder</span></span>
+    <span id="snakesTitle">Snakes Hit: <span id="snakesValue">placeholder</span></span>
+
+    <span id="frames">FPS: <span id="framesValue">placeholder</span></span>
     <script>
 
         let w = window.innerWidth;
@@ -22,7 +25,14 @@
         // Declare the player object
         var player = new player();
         var hitbox = new hitbox();
-        var enemy = new enemy();
+
+        var enemy1 = new enemy(100, 0.8);
+        var enemy2 = new enemy(200, 0.5);
+        var enemy3 = new enemy(300, 0.65);
+        var enemy4 = new enemy(75, 0.75);
+        var enemy5 = new enemy(-400, 1);
+        var enemy6 = new enemy(-150, 0.9);
+
         var weapon = new weapon();
 
         function setup() {
@@ -37,6 +47,7 @@
             
             clear();
             document.getElementById("staminaValue").innerText = stamina.toFixed(0);
+            document.getElementById("framesValue").innerText = frameRate().toFixed(2);
 
             let seconds = (millis() / 1000).toFixed(0);
 
@@ -51,8 +62,18 @@
                 stamina = 60;
             }
 
-            enemy.show();
-            enemy.update();
+            enemy1.show();
+            enemy2.show();
+            enemy3.show();
+            enemy4.show();
+            enemy5.show();
+            enemy6.show();
+            enemy1.update();
+            enemy2.update();
+            enemy3.update();
+            enemy4.update();
+            enemy5.update();
+            enemy6.update();
 
             player.show();
             player.update();

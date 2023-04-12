@@ -5,11 +5,20 @@ body {
     overflow: hidden;
 }
 
-#staminaTitle {
+#staminaTitle, #snakesTitle {
+    position: absolute;
     font-size: 40px;
 }
 
-#staminaValue {
-    font-size: 40px;
+#staminaValue, #snakesValue {
     font-weight: bold;
+}
+
+#snakesTitle {
+    top: 55px;
+}
+
+#frames {
+    float: right;
+    font-size: 27px;
 }

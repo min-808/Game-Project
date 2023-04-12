@@ -55,13 +55,10 @@ function weapon() {
     this.width = 100;
     this.height = 10;
 
-    this.xPos = player.xPos;
-    this.yPos = player.yPos;
+    this.xPos = 300;
+    this.yPos = 300;
 
     this.rRot = -90;
-    this.lRot = -180;
-    this.uRot = 180;
-    this.dRot = 360;
 
     this.speed = 7;
 
@@ -80,8 +77,6 @@ function weapon() {
         rect(0, 0, this.width, this.height);
         stroke(0,0,0)
 
-        console.log(this.dRot);
-
         stamina -= 0.1;
 
         if (stamina <= 0) {
@@ -99,6 +94,8 @@ function weapon() {
         if (this.opacity >= 300) {
             this.opacity = 300;
         }
+
+        console.log(this.xPos)
     }
 
     this.update = function() {
@@ -143,30 +140,34 @@ function weapon() {
     //}
 }
 
-function enemy() {
+function enemy(num, speed) {
 
     this.width = 80;
     this.height = 80;
 
     this.speed = 50;
 
-    this.xPos = w;
-    this.yPos = h/2;
+    this.xPos = w - num;
+    this.yPos = h/2 - num;
 
     this.show = function() {
         image(snake, this.xPos, this.yPos, this.width, this.height);
     }
 
     this.update = function() {
-        this.xPos += (player.xPos - this.xPos) / this.speed;
-        this.yPos += (player.yPos - this.yPos) / this.speed;
+        this.xPos += (player.xPos - this.xPos + num/2) / (this.speed / speed);
+        this.yPos += (player.yPos - this.yPos - num/3) / (this.speed / speed);
 
         var hit = collideRectRect(hitbox.xPos, hitbox.yPos, hitbox.width, hitbox.height, this.xPos, this.yPos, this.width, this.height);
 
         if (hit == true) {
-            console.log("within hitbox");
+            //console.log("within hitbox");
             //
         }
+
+        var hits = collideRectRect(this.xPos, this.yPos, this.width, this.height, weapon.xPos, weapon.yPos, weapon.width, weapon.height);
+        
+        document.getElementById("snakesValue").textContent = hits;
 
         
 
