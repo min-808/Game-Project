@@ -22,6 +22,11 @@
         var stamina = 60;
         var hit = false;
 
+        var execute;
+        var counter = 0;
+
+        var bullets = [];
+
         // Declare the player object
         var player = new player();
         var hitbox = new hitbox();
@@ -34,6 +39,7 @@
         var enemy6 = new enemy(-150, 0.9);
 
         var weapon = new weapon();
+
 
         function setup() {
             frameRate(60);
@@ -81,29 +87,29 @@
             hitbox.show();
             hitbox.update();
 
-            if (keyIsDown(UP_ARROW)) {
+            if (keyIsDown(87)) {
                 player.up();
                 pos = "up";
             }
-            if (keyIsDown(DOWN_ARROW)) {
+            if (keyIsDown(83)) {
                 player.down();
                 pos = "down";
             }
-            if (keyIsDown(LEFT_ARROW)) {
+            if (keyIsDown(65)) {
                 player.left();
                 pos = "left";
             }
-            if (keyIsDown(RIGHT_ARROW)) {
+            if (keyIsDown(68)) {
                 player.right();
                 pos = "right";
             }
 
-            if (keyIsDown(67)) {
+            if (keyIsDown(77)) {
                 weapon.show();
                 weapon.update();
             }
 
-            if (!keyIsDown(67)) {
+            if (!keyIsDown(77)) {
                 weapon.fade();
             }
 
@@ -111,8 +117,26 @@
             //console.log(hit)
 
             //implement collisions with image and moving sword
+
             
+            for (var j = bullets.length - 1; j >= 0; j--) {
+                bullets[j].display();
+                bullets[j].move();
+
+                //if (bullets[j].yPos < 0) {
+                    //bullets.splice(j, 1);
+                //}
+            }
         }
+
+        function mousePressed() {
+            let b = new shoot(mouseY);
+            bullets.push(b);
+
+            console.log(bullets)
+        }
+
+
 
         //function keyReleased() {
             //if (keyCode == 67) {

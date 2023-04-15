@@ -6,7 +6,7 @@ function hitbox() {
     this.yPos = player.yPos;
 
     this.show = function() {
-        rectMode(CORNER);
+        rectMode(CENTER);
         fill(0, 0, 0, 35);
         rect(this.xPos, this.yPos, this.width, this.height);
     }
@@ -25,8 +25,8 @@ function player() {
     this.yPos = h/2;
 
     this.show = function() {
-        imageMode(CORNER);
-        image(knight, this.xPos + this.width/2, this.yPos + this.height/2, this.width, this.height);
+        imageMode(CENTER);
+        image(knight, this.xPos, this.yPos, this.width, this.height);
     }
 
     this.update = function() {
@@ -188,4 +188,33 @@ function enemy(num, speed) {
         //}
 
     }
+}
+
+class shoot {
+    constructor(x_, y_) {
+        this.width = 30;
+        this.height = 30;
+
+        this.xPos = 0;
+        this.yPos = 0;
+
+        this.speed = 10;
+        this.opacity = 255;
+
+        this.mousePosX = x_;
+        this.mousePosY = y_;
+    }
+
+    display() {
+        ellipseMode(CENTER);
+        fill(0,0,0, this.opacity);
+        ellipse(this.yPos, this.xPos, this.width, this.height);
+    }
+
+    move() {
+        this.yPos -= this.speed;
+        this.xPos -= this.speed;
+    }
+
+    
 }
