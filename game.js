@@ -1,3 +1,50 @@
+function getMouseVector() {
+    let mouseXalt = mouseX - player.xPos;
+    let mouseYalt = mouseY - player.yPos;
+    let mouseDir = createVector(mouseXalt, mouseYalt);
+    mouseDir.normalize();
+    return mouseDir;
+}
+
+function drawCursor() {
+    this.radius = 30;
+
+    this.xPos = 0;
+    this.yPos = 0;
+
+    this.show = function() {
+        fill(23,231,38)
+        circle(this.xPos, this.yPos, this.radius);
+
+    }
+
+    this.update = function() {
+        this.xPos = mouseX;
+        this.yPos = mouseY;
+    }
+}
+
+function drawLine() {
+
+    this.xPos = 0
+    this.yPos = 0
+    this.xPos2 = 0
+    this.yPos2 = 0
+
+    this.show = function() {
+        fill(255,255,255);
+        line(this.xPos, this.yPos, this.xPos2, this.yPos2);
+    }
+
+    this.update = function() {
+        this.xPos = player.xPos;
+        this.yPos = player.yPos;
+        this.xPos2 = mouseX;
+        this.yPos2 = mouseY;
+    }
+
+}
+
 function hitbox() {
     this.width = 180;
     this.height = 180;
@@ -142,17 +189,18 @@ function player() {
 
 class enemy {
 
-    constructor(alt_, speed_) {
+    constructor(alt_x, alt_y, speed_) {
         this.width = 80;
         this.height = 80;
 
-        this.speed = 50;
+        this.speed = 215; // Higher number is slower
         this.editSpeed = speed_;
 
-        this.xPos = w - alt_;
-        this.yPos = h/2 - alt_;
+        this.xPos = w - alt_x;
+        this.yPos = h - alt_y;
 
-        this.alt = alt_;
+        this.altX = alt_x;
+        this.altY = alt_y;
 
         //this.hits = collideRectRect(this.xPos, this.yPos, this.width, this.height, shoot.xPos, shoot.yPos, shoot.width, shoot.height);
     }
@@ -170,6 +218,24 @@ class enemy {
         //if (this.hits == true) {
             //document.getElementById("snakesValue").innerText = this.hits;
         //}
+    }
+
+    // my getters even though this isn't a private class
+
+    getxPos() {
+        return this.xPos;
+    }
+
+    getyPos() {
+        return this.yPos;
+    }
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
     }
 
 
@@ -206,7 +272,9 @@ class shoot {
         this.xPos = player.xPos;
         this.yPos = player.yPos;
 
-        this.speed = 10;
+        this.xSpeed = 15 * x_;
+        this.ySpeed = 15 * y_;
+
         this.opacity = 255;
 
         this.mousePosX = x_;
@@ -220,8 +288,27 @@ class shoot {
     }
 
     move() {
-        this.xPos -= this.speed;
-        this.yPos -= this.speed;
+        this.xPos += this.xSpeed;
+        this.yPos += this.ySpeed;
+
+        this.xSpeed *= 0.99;
+        this.ySpeed *= 0.99;
+    }
+
+    getxPos() {
+        return this.xPos;
+    }
+
+    getyPos() {
+        return this.yPos;
+    }
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
     }
 
 

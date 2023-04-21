@@ -32,6 +32,9 @@
         var player = new player();
         var hitbox = new hitbox();
 
+        var drawCursor = new drawCursor();
+        var drawLine = new drawLine();
+
         //var enemy1 = new enemy(100, 0.8);
         //var enemy2 = new enemy(200, 0.5);
         //var enemy3 = new enemy(300, 0.65);
@@ -49,11 +52,35 @@
             knight = loadImage("knight.png");
             snake = loadImage("snake.png");
 
-            for (var s = 0; s < 15; s++) {
-                let s = new enemy(random(-w, w), random(0.5, 1));
+            for (var s = 0; s < 20; s++) { // s is snake amount
+                
+                /* fix this later, better ranomization for spawns
+                var quad = random(0, 3);
+
+                var xQuad = 0;
+                var yQuad = 0;
+
+                if (quad == 0) {
+                    xQuad = random(0, w);
+                    yQuad = random(-100, 0);
+                } else if (quad == 1) {
+                    xQuad = random(w, 100);
+                    yQuad = random(0, h);
+                } else if (quad == 2) {
+                    xQuad = random(0, w);
+                    yQuad = random(h, 100);
+                } else if (quad == 3) {
+                    xQuad = random(-100, 0);
+                    yQuad = random(0, h);
+                }
+                */
+
+                let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
                 snakeAmount.push(s);
 
                 console.log(snakeAmount);
+
+                
             }
         }
 
@@ -75,6 +102,13 @@
             if (stamina >= 60) {
                 stamina = 60;
             }
+
+            drawLine.show();
+            drawLine.update();
+
+            drawCursor.show();
+            drawCursor.update();
+            noCursor();
 
             player.show();
             player.update();
@@ -111,8 +145,12 @@
             //hit = collideRectRect(enemy.xPos, enemy.yPos, enemy.width, enemy.height, player.xPos + player.height, player.yPos + player.width, weapon.width, weapon.height)
             //console.log(hit)
 
-            //implement collisions with image and moving sword
 
+            for (var sn = 0; sn < snakeAmount.length; sn++) {
+                snakeAmount[sn].display();
+                snakeAmount[sn].move();
+                snakeAmount[sn].check();
+            }
             
             for (var j = bullets.length - 1; j >= 0; j--) {
                 bullets[j].display();
@@ -121,21 +159,36 @@
                 //if (bullets[j].yPos < 0) {
                     //bullets.splice(j, 1);
                 //}
+
+                for (var i = snakeAmount.length - 1; i >= 0; i--) {
+                var hit = collideRectRect(bullets[j].getxPos(), bullets[j].getyPos(), bullets[j].getWidth(), bullets[j].getHeight(), snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight());
+                
+                if (hit) {
+                    console.log(hit)
+
+                    counter++;
+                    document.getElementById("snakesValue").innerText = counter;
+
+                    snakeAmount.splice(i, 1);
+                    bullets.splice(j, 1);
+                    break;
+                }
+                }
             }
 
-            for (var sn = 0; sn < snakeAmount.length; sn++) {
-                snakeAmount[sn].display();
-                snakeAmount[sn].move();
-                snakeAmount[sn].check();
-            }
+
 
         }
 
         function mousePressed() {
-            let b = new shoot(mouseX, mouseY);
+            let mouseVector = getMouseVector();
+            let b = new shoot(mouseVector.x, mouseVector.y);
             bullets.push(b);
 
-            console.log(bullets)
+            stamina -= 5;
+
+            console.log(mouseVector)
+
         }
 
 
