@@ -26,19 +26,20 @@
         var counter = 0;
 
         var bullets = [];
+        var snakeAmount = [];
 
         // Declare the player object
         var player = new player();
         var hitbox = new hitbox();
 
-        var enemy1 = new enemy(100, 0.8);
-        var enemy2 = new enemy(200, 0.5);
-        var enemy3 = new enemy(300, 0.65);
-        var enemy4 = new enemy(75, 0.75);
-        var enemy5 = new enemy(-400, 1);
-        var enemy6 = new enemy(-150, 0.9);
+        //var enemy1 = new enemy(100, 0.8);
+        //var enemy2 = new enemy(200, 0.5);
+        //var enemy3 = new enemy(300, 0.65);
+        //var enemy4 = new enemy(75, 0.75);
+        //var enemy5 = new enemy(-400, 1);
+        //var enemy6 = new enemy(-150, 0.9);
 
-        var weapon = new weapon();
+        //var weapon = new weapon();
 
 
         function setup() {
@@ -47,6 +48,13 @@
             angleMode(DEGREES);
             knight = loadImage("knight.png");
             snake = loadImage("snake.png");
+
+            for (var s = 0; s < 15; s++) {
+                let s = new enemy(random(-w, w), random(0.5, 1));
+                snakeAmount.push(s);
+
+                console.log(snakeAmount);
+            }
         }
 
         function draw() {
@@ -67,19 +75,6 @@
             if (stamina >= 60) {
                 stamina = 60;
             }
-
-            enemy1.show();
-            enemy2.show();
-            enemy3.show();
-            enemy4.show();
-            enemy5.show();
-            enemy6.show();
-            enemy1.update();
-            enemy2.update();
-            enemy3.update();
-            enemy4.update();
-            enemy5.update();
-            enemy6.update();
 
             player.show();
             player.update();
@@ -104,14 +99,14 @@
                 pos = "right";
             }
 
-            if (keyIsDown(77)) {
+            /*if (keyIsDown(77)) {
                 weapon.show();
                 weapon.update();
             }
 
             if (!keyIsDown(77)) {
                 weapon.fade();
-            }
+            }*/
 
             //hit = collideRectRect(enemy.xPos, enemy.yPos, enemy.width, enemy.height, player.xPos + player.height, player.yPos + player.width, weapon.width, weapon.height)
             //console.log(hit)
@@ -127,10 +122,17 @@
                     //bullets.splice(j, 1);
                 //}
             }
+
+            for (var sn = 0; sn < snakeAmount.length; sn++) {
+                snakeAmount[sn].display();
+                snakeAmount[sn].move();
+                snakeAmount[sn].check();
+            }
+
         }
 
         function mousePressed() {
-            let b = new shoot(mouseY);
+            let b = new shoot(mouseX, mouseY);
             bullets.push(b);
 
             console.log(bullets)

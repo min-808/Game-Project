@@ -51,7 +51,7 @@ function player() {
     
 }
 
-function weapon() {
+/*function weapon() {
     this.width = 100;
     this.height = 10;
 
@@ -105,7 +105,7 @@ function weapon() {
 
     this.fade = function() {
         rectMode(CORNER)
-        translate(player.xPos + player.height, player.yPos + player.width);
+        translate(player.xPos + player.height, player.yPos + player.width); // this might be the problem  cancel out the translate somehow to only do it to this object
         rotate(this.rRot);
         translate(0,-100)
 
@@ -138,36 +138,45 @@ function weapon() {
     //this.swing = function() {
         //
     //}
-}
+}*/
 
-function enemy(num, speed) {
+class enemy {
 
-    this.width = 80;
-    this.height = 80;
+    constructor(alt_, speed_) {
+        this.width = 80;
+        this.height = 80;
 
-    this.speed = 50;
+        this.speed = 50;
+        this.editSpeed = speed_;
 
-    this.xPos = w - num;
-    this.yPos = h/2 - num;
+        this.xPos = w - alt_;
+        this.yPos = h/2 - alt_;
 
-    this.show = function() {
-        image(snake, this.xPos, this.yPos, this.width, this.height);
+        this.alt = alt_;
+
+        //this.hits = collideRectRect(this.xPos, this.yPos, this.width, this.height, shoot.xPos, shoot.yPos, shoot.width, shoot.height);
     }
 
-    this.update = function() {
-        this.xPos += (player.xPos - this.xPos + num/2) / (this.speed / speed);
-        this.yPos += (player.yPos - this.yPos - num/3) / (this.speed / speed);
+    display() {
+        image(snake, this.xPos, this.yPos, this.height, this.height);
+    }
 
-        var hit = collideRectRect(hitbox.xPos, hitbox.yPos, hitbox.width, hitbox.height, this.xPos, this.yPos, this.width, this.height);
+    move() {
+        this.xPos += (player.xPos - this.xPos /*+ this.alt/2*/) / (this.speed / this.editSpeed);
+        this.yPos += (player.yPos - this.yPos /*- this.alt/3*/) / (this.speed / this.editSpeed);
+    }
 
-        if (hit == true) {
-            //console.log("within hitbox");
-            //
-        }
+    check() {
+        //if (this.hits == true) {
+            //document.getElementById("snakesValue").innerText = this.hits;
+        //}
+    }
 
-        var hits = collideRectRect(this.xPos, this.yPos, this.width, this.height, weapon.xPos, weapon.yPos, weapon.width, weapon.height);
+
+
+        //var hits = collideRectRect(this.xPos, this.yPos, this.width, this.height, weapon.xPos, weapon.yPos, weapon.width, weapon.height);
         
-        document.getElementById("snakesValue").textContent = hits;
+        //document.getElementById("snakesValue").textContent = hits;
 
         
 
@@ -187,7 +196,6 @@ function enemy(num, speed) {
             //this.inc += 1.25;
         //}
 
-    }
 }
 
 class shoot {
@@ -195,8 +203,8 @@ class shoot {
         this.width = 30;
         this.height = 30;
 
-        this.xPos = 0;
-        this.yPos = 0;
+        this.xPos = player.xPos;
+        this.yPos = player.yPos;
 
         this.speed = 10;
         this.opacity = 255;
@@ -208,13 +216,14 @@ class shoot {
     display() {
         ellipseMode(CENTER);
         fill(0,0,0, this.opacity);
-        ellipse(this.yPos, this.xPos, this.width, this.height);
+        ellipse(this.xPos, this.yPos, this.width, this.height);
     }
 
     move() {
-        this.yPos -= this.speed;
         this.xPos -= this.speed;
+        this.yPos -= this.speed;
     }
+
 
     
 }
