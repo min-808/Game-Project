@@ -62,7 +62,7 @@ function hitbox() {
         this.xPos = player.xPos;
         this.yPos = player.yPos;
     }
-} // hi
+}
 
 function player() {
     this.width = 80;
@@ -202,11 +202,59 @@ class enemy {
         this.altX = alt_x;
         this.altY = alt_y;
 
-        //this.hits = collideRectRect(this.xPos, this.yPos, this.width, this.height, shoot.xPos, shoot.yPos, shoot.width, shoot.height);
+        this.currentCount = 0;
+
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+        this.hWidth = 80;
+        this.hHeight = 10;
+        
+        this.hColorR = 144;
+        this.hColorG = 238;
+        this.hColorB = 144;
+
     }
 
     display() {
         image(snake, this.xPos, this.yPos, this.height, this.height);
+    }
+
+    displayHealthBars() {
+        fill(this.hColorR, this.hColorG, this.hColorB)
+        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight);
+    }
+
+    updateHealthBars() {
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+
+        if ((this.currentCount >= 1) && (this.currentCount <= 10)) {
+            this.hWidth -= 5;
+
+            this.hColorR += 10;
+            this.hColorG -= 5;
+            this.hColorB -= 5;
+
+            if (this.hWidth <= 30) {
+                this.hWidth = 30;
+            }
+
+            if (this.hColorG <= 213) {
+                this.hColorG = 213;
+            }
+
+            if (this.hColorB <= 128) {
+                this.hColorB = 128;
+            }
+        }
+
+        if ((this.currentCount > 10) && (this.currentCount <= 11)) {
+            this.hWidth -= 5;
+
+            if (this.hWidth <= 0) {
+                this.hWidth = 0;
+            }
+        }
     }
 
     move() {
@@ -214,13 +262,15 @@ class enemy {
         this.yPos += (player.yPos - this.yPos /*- this.alt/3*/) / (this.speed / this.editSpeed);
     }
 
-    check() {
-        //if (this.hits == true) {
-            //document.getElementById("snakesValue").innerText = this.hits;
-        //}
+    // GETTERS
+
+    getCount() {
+        return this.currentCount;
     }
 
-    // my getters even though this isn't a private class
+    addCount(newCount) {
+        this.currentCount += newCount;
+    }
 
     getxPos() {
         return this.xPos;
@@ -238,30 +288,9 @@ class enemy {
         return this.height;
     }
 
-
-
-        //var hits = collideRectRect(this.xPos, this.yPos, this.width, this.height, weapon.xPos, weapon.yPos, weapon.width, weapon.height);
-        
-        //document.getElementById("snakesValue").textContent = hits;
-
-        
-
-        //this.hit = collideRectRect(jumper.x, jumper.y, jumper.width, jumper.height, this.Xpos, this.Ypos, this.width, this.width);
-
         //if (this.hit == true) {
             //death();
         //}
-
-        //if (jumper.y == h - jumper.width) {
-            //death();
-        //}
-        
-        //if (this.Xpos < 0) {
-            //this.Xpos = w - this.width;
-            //this.Ypos = random(0, h - this.width);
-            //this.inc += 1.25;
-        //}
-
 }
 
 class shoot {
@@ -272,8 +301,8 @@ class shoot {
         this.xPos = player.xPos;
         this.yPos = player.yPos;
 
-        this.xSpeed = 15 * x_;
-        this.ySpeed = 15 * y_;
+        this.xSpeed = 13 * x_;
+        this.ySpeed = 13 * y_;
 
         this.opacity = 255;
 
@@ -291,8 +320,8 @@ class shoot {
         this.xPos += this.xSpeed;
         this.yPos += this.ySpeed;
 
-        this.xSpeed *= 0.99;
-        this.ySpeed *= 0.99;
+        this.xSpeed *= 1;
+        this.ySpeed *= 1; // for no slowdown at the end of the point
     }
 
     getxPos() {
@@ -310,7 +339,5 @@ class shoot {
     getHeight() {
         return this.height;
     }
-
-
     
 }

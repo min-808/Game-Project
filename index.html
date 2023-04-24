@@ -28,22 +28,13 @@
         var bullets = [];
         var snakeAmount = [];
 
-        // Declare the player object
         var player = new player();
         var hitbox = new hitbox();
 
         var drawCursor = new drawCursor();
         var drawLine = new drawLine();
 
-        //var enemy1 = new enemy(100, 0.8);
-        //var enemy2 = new enemy(200, 0.5);
-        //var enemy3 = new enemy(300, 0.65);
-        //var enemy4 = new enemy(75, 0.75);
-        //var enemy5 = new enemy(-400, 1);
-        //var enemy6 = new enemy(-150, 0.9);
-
         //var weapon = new weapon();
-
 
         function setup() {
             frameRate(60);
@@ -54,7 +45,7 @@
 
             for (var s = 0; s < 20; s++) { // s is snake amount
                 
-                /* fix this later, better ranomization for spawns
+                /* fix this later, better randomization for spawns
                 var quad = random(0, 3);
 
                 var xQuad = 0;
@@ -76,12 +67,12 @@
                 */
 
                 let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
+
                 snakeAmount.push(s);
-
                 console.log(snakeAmount);
-
                 
             }
+
         }
 
         function draw() {
@@ -90,14 +81,7 @@
             document.getElementById("staminaValue").innerText = stamina.toFixed(0);
             document.getElementById("framesValue").innerText = frameRate().toFixed(2);
 
-            let seconds = (millis() / 1000).toFixed(0);
-
-            //if (seconds % 2 == 0) {
-                //stamina += 1;
-            //}
-            
-
-            //while
+            let seconds = (millis() / 1000).toFixed(0); // timer
 
             if (stamina >= 60) {
                 stamina = 60;
@@ -142,14 +126,12 @@
                 weapon.fade();
             }*/
 
-            //hit = collideRectRect(enemy.xPos, enemy.yPos, enemy.width, enemy.height, player.xPos + player.height, player.yPos + player.width, weapon.width, weapon.height)
-            //console.log(hit)
-
-
             for (var sn = 0; sn < snakeAmount.length; sn++) {
                 snakeAmount[sn].display();
                 snakeAmount[sn].move();
-                snakeAmount[sn].check();
+
+                snakeAmount[sn].displayHealthBars();
+                snakeAmount[sn].updateHealthBars();
             }
             
             for (var j = bullets.length - 1; j >= 0; j--) {
@@ -161,22 +143,24 @@
                 //}
 
                 for (var i = snakeAmount.length - 1; i >= 0; i--) {
-                var hit = collideRectRect(bullets[j].getxPos(), bullets[j].getyPos(), bullets[j].getWidth(), bullets[j].getHeight(), snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight());
-                
-                if (hit) {
-                    console.log(hit)
 
-                    counter++;
-                    document.getElementById("snakesValue").innerText = counter;
+                    var hit = collideRectRect(bullets[j].getxPos(), bullets[j].getyPos(), bullets[j].getWidth(), bullets[j].getHeight(), snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight());
 
-                    snakeAmount.splice(i, 1);
-                    bullets.splice(j, 1);
-                    break;
-                }
+                    if (hit == true) {
+                        snakeAmount[i].addCount(1);
+                        console.log(hit + " " + snakeAmount[i].getCount())
+
+                        if (snakeAmount[i].getCount() == 11) { // current single hits do between 6 and 8 i think
+                            counter++;
+                            document.getElementById("snakesValue").innerText = counter;
+
+                            snakeAmount.splice(i, 1);
+                            bullets.splice(j, 1);
+                            break;
+                        }
+                    }
                 }
             }
-
-
 
         }
 
@@ -186,12 +170,7 @@
             bullets.push(b);
 
             stamina -= 5;
-
-            console.log(mouseVector)
-
         }
-
-
 
         //function keyReleased() {
             //if (keyCode == 67) {
