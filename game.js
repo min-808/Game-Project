@@ -62,6 +62,35 @@ function hitbox() {
         this.xPos = player.xPos;
         this.yPos = player.yPos;
     }
+
+    this.getxPos = function() {
+        return this.xPos;
+    }
+
+    this.getyPos = function() {
+        return this.yPos;
+    } // inaccuracies might have something to do with the rectmode or something
+}
+
+class invisibleHitBox {
+    constructor() {
+        this.width = 180;
+        this.height = 180;
+
+        this.xPos = player.xPos;
+        this.yPos = player.yPos;
+    }
+
+    display() {
+        rectMode(CENTER);
+        fill(0,0,0,0);
+        rect(this.xPos, this.yPos, this.width, this.height);
+    }
+
+    update() {
+        this.xPos = player.xPos;
+        this.yPos = player.yPos;
+    }
 }
 
 function player() {
@@ -76,8 +105,22 @@ function player() {
         image(knight, this.xPos, this.yPos, this.width, this.height);
     }
 
-    this.update = function() {
-        //
+    this.update = function() { // Bounds
+        if (this.yPos > h - this.width / 2) {
+            this.yPos = h - this.width / 2;
+        }
+
+        if (this.yPos < 0 + this.width / 2) {
+            this.yPos = 0 + this.width / 2;
+        }
+
+        if (this.xPos < 0 + this.width / 2) {
+            this.xPos = 0 + this.width / 2; 
+        }
+
+        if (this.xPos > w - this.width / 2) {
+            this.xPos = w - this.width / 2;
+        }
     }
 
     this.up = function() {

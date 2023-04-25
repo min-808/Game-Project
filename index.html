@@ -12,6 +12,7 @@
 <body>
     <span id="staminaTitle">Stamina: <span id="staminaValue">placeholder</span></span>
     <span id="snakesTitle">Snakes Hit: <span id="snakesValue">placeholder</span></span>
+    <span id="damageTitle">Took Damage?: <span id="damageValue">placeholder</span></span>
 
     <span id="frames">FPS: <span id="framesValue">placeholder</span></span>
     <script>
@@ -27,9 +28,12 @@
 
         var bullets = [];
         var snakeAmount = [];
+        var hitboxes = [];
 
         var player = new player();
         var hitbox = new hitbox();
+
+        var invis = new invisibleHitBox();
 
         var drawCursor = new drawCursor();
         var drawLine = new drawLine();
@@ -67,10 +71,13 @@
                 */
 
                 let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
+                let hb = new invisibleHitBox();
 
                 snakeAmount.push(s);
+                hitboxes.push(hb);
+
                 console.log(snakeAmount);
-                
+                console.log(hitboxes);
             }
 
         }
@@ -99,6 +106,9 @@
 
             hitbox.show();
             hitbox.update();
+
+            //checkHealthStatus();
+            //checkStaminaStatus();
 
             if (keyIsDown(87)) {
                 player.up();
@@ -132,6 +142,9 @@
 
                 snakeAmount[sn].displayHealthBars();
                 snakeAmount[sn].updateHealthBars();
+
+                hitboxes[sn].display();
+                hitboxes[sn].update();
             }
             
             for (var j = bullets.length - 1; j >= 0; j--) {
@@ -148,16 +161,25 @@
 
                     if (hit == true) {
                         snakeAmount[i].addCount(1);
-                        console.log(hit + " " + snakeAmount[i].getCount())
+                        //console.log(hit + " " + snakeAmount[i].getCount())
 
                         if (snakeAmount[i].getCount() == 11) { // current single hits do between 6 and 8 i think
                             counter++;
                             document.getElementById("snakesValue").innerText = counter;
 
-                            snakeAmount.splice(i, 1);
                             bullets.splice(j, 1);
+                            snakeAmount.splice(i, 1);
+                            
                             break;
                         }
+                    }
+
+                    var hitPlayer = collideRectRect((hitboxes[i].xPos - hitboxes[i].width / 2) + 40, (hitboxes[i].yPos - hitboxes[i].height / 2) + 40, hitboxes[i].width, hitboxes[i].height, snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight())
+// fix collision between player and snake idk why tis borke
+                    if (hitPlayer == true) {
+                        document.getElementById("damageValue").textContent = hitPlayer;
+                    } else {
+                        document.getElementById("damageValue").textContent = hitPlayer;
                     }
                 }
             }

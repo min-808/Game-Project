@@ -5,17 +5,21 @@ body {
     overflow: hidden;
 }
 
-#staminaTitle, #snakesTitle {
+#staminaTitle, #snakesTitle, #damageTitle {
     position: absolute;
     font-size: 40px;
 }
 
-#staminaValue, #snakesValue {
+#staminaValue, #snakesValue, #damageValue {
     font-weight: bold;
 }
 
 #snakesTitle {
     top: 55px;
+}
+
+#damageTitle {
+    top: 110px;
 }
 
 #frames {
