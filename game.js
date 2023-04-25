@@ -70,6 +70,21 @@ function hitbox() {
     this.getyPos = function() {
         return this.yPos;
     } // inaccuracies might have something to do with the rectmode or something
+
+
+    this.hitReg = function() {
+        for (var h = 0; h < snakeAmount.length; h++) {
+
+            var hitPlayer = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, snakeAmount[h].getxPos(), snakeAmount[h].getyPos(), snakeAmount[h].getWidth(), snakeAmount[h].getHeight())
+        
+            if (hitPlayer) {
+                document.getElementById("damageValue").textContent = "you were hit";
+                console.log('hit')
+            }
+
+        }
+
+    }   
 }
 
 class invisibleHitBox {

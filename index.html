@@ -28,7 +28,7 @@
 
         var bullets = [];
         var snakeAmount = [];
-        var hitboxes = [];
+        //var hitboxes = [];
 
         var player = new player();
         var hitbox = new hitbox();
@@ -71,13 +71,13 @@
                 */
 
                 let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
-                let hb = new invisibleHitBox();
+                //let hb = new invisibleHitBox();
 
                 snakeAmount.push(s);
-                hitboxes.push(hb);
+                //hitboxes.push(hb);
 
                 console.log(snakeAmount);
-                console.log(hitboxes);
+                //console.log(hitboxes);
             }
 
         }
@@ -103,6 +103,8 @@
 
             player.show();
             player.update();
+
+            hitbox.hitReg();
 
             hitbox.show();
             hitbox.update();
@@ -143,8 +145,8 @@
                 snakeAmount[sn].displayHealthBars();
                 snakeAmount[sn].updateHealthBars();
 
-                hitboxes[sn].display();
-                hitboxes[sn].update();
+                //hitboxes[sn].display();
+                //hitboxes[sn].update();
             }
             
             for (var j = bullets.length - 1; j >= 0; j--) {
@@ -163,7 +165,7 @@
                         snakeAmount[i].addCount(1);
                         //console.log(hit + " " + snakeAmount[i].getCount())
 
-                        if (snakeAmount[i].getCount() == 11) { // current single hits do between 6 and 8 i think
+                        if (snakeAmount[i].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
                             counter++;
                             document.getElementById("snakesValue").innerText = counter;
 
@@ -174,13 +176,6 @@
                         }
                     }
 
-                    var hitPlayer = collideRectRect((hitboxes[i].xPos - hitboxes[i].width / 2) + 40, (hitboxes[i].yPos - hitboxes[i].height / 2) + 40, hitboxes[i].width, hitboxes[i].height, snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight())
-// fix collision between player and snake idk why tis borke
-                    if (hitPlayer == true) {
-                        document.getElementById("damageValue").textContent = hitPlayer;
-                    } else {
-                        document.getElementById("damageValue").textContent = hitPlayer;
-                    }
                 }
             }
 
@@ -193,6 +188,8 @@
 
             stamina -= 5;
         }
+
+        // SCRAPPED WEAPON SYSTEM
 
         //function keyReleased() {
             //if (keyCode == 67) {
