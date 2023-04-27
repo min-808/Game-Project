@@ -110,6 +110,28 @@ function instructions() {
     }
 }
 
+function shop() {
+    this.instWidth = 850;
+    this.instHeight = 300;
+    this.instxPos = w/2;
+    this.instyPos = 100;
+
+    this.instShow = function() {
+        fill(0,0,0,100)
+        rectMode(CENTER);
+        rect(this.instxPos, this.instyPos, this.instWidth, this.instHeight);
+        textSize(25);
+        fill(255,255,255)
+        textAlign(CENTER)
+        textStyle(NORMAL)
+        noStroke()
+        text("Welcome to the Nexus!", this.instxPos, this.instyPos - 40);
+        text("Here you can regenerate your HP and Stamina without being attacked", this.instxPos, this.instyPos);
+        text("You can click the button on the right to access the shop", this.instxPos, this.instyPos + 40);
+        text("Return to your level by clicking the button on the left", this.instxPos, this.instyPos + 120);
+    }
+}
+
 function hitbox() {
     this.width = 220;
     this.height = 220;
@@ -492,10 +514,6 @@ class enemy {
     getHeight() {
         return this.height;
     }
-
-        //if (this.hit == true) {
-            //death();
-        //}
 }
 
 class shoot {

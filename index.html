@@ -11,6 +11,7 @@
 </head>
 <body>
     <span id="snakesTitle">Snakes Hit: <span id="snakesValue">0</span></span>
+    <span id="goldTitle">Gold: <span id="goldValue">0</span></span>
 
     <span id="frames">FPS: <span id="framesValue">placeholder</span></span>
     <script>
@@ -26,6 +27,7 @@
 
         var level = 1;
         var experience = 0;
+        var gold = 0;
 
         var hit = false;
 
@@ -41,6 +43,7 @@
         var player = new player();
         var hitbox = new hitbox();
         var instructions = new instructions();
+        var shop = new shop();
 
         var drawCursor = new drawCursor();
         var drawLine = new drawLine();
@@ -62,7 +65,9 @@
             if (mode == 0) {
                 clear();
                 document.getElementById("snakesTitle").style.visibility = "hidden";
+                document.getElementById("goldTitle").style.visibility = "hidden";
                 document.getElementById("frames").style.visibility = "hidden";
+
                 document.body.style.backgroundColor = "lightgray";
 
                 player.show();
@@ -128,17 +133,19 @@
                 clear();
 
                 document.getElementById("snakesTitle").style.visibility = "visible";
+                document.getElementById("goldTitle").style.visibility = "visible";
                 document.getElementById("frames").style.visibility = "visible";
                 document.body.style.backgroundColor = "#c6ffc6"
 
                 document.getElementById("framesValue").innerText = frameRate().toFixed(2);
+                document.getElementById("goldValue").innerText = gold;
 
                 if (stamina >= 60) {
                     stamina = 60;
                 }
 
                 if (stamina < 60) {
-                    stamina += 0.03;
+                    stamina += 0.07;
                 }
 
                 if ((player.health < player.maxHealth) && (!player.health <= 0)) {
@@ -245,12 +252,66 @@
                                 snakeAmount.splice(i, 1);
                                 
                                 experience += 5;
+                                gold += 10;
 
                                 break;
                             }
                         }
 
                     }
+                }
+
+            }
+
+            if (mode == 2) {
+                clear();
+
+                document.body.style.backgroundColor = "lightblue"
+
+                shop.instShow();
+
+                player.show();
+                player.update();
+
+                hitbox.show();
+                hitbox.update();
+
+                player.displayHealthBars();
+                player.updateHealthBars();
+
+                player.displayStaminaBars();
+                player.updateStaminaBars();
+
+                player.displayLevel();
+                player.updateLevel();
+
+                if (keyIsDown(87)) {
+                    player.up();
+                    pos = "up";
+                }
+                if (keyIsDown(83)) {
+                    player.down();
+                    pos = "down";
+                }
+                if (keyIsDown(65)) {
+                    player.left();
+                    pos = "left";
+                }
+                if (keyIsDown(68)) {
+                    player.right();
+                    pos = "right";
+                }
+
+                if (stamina >= 60) {
+                    stamina = 60;
+                }
+
+                if (stamina < 60) {
+                    stamina += 0.07;
+                }
+
+                if ((player.health < player.maxHealth) && (!player.health <= 0)) {
+                    player.health += 0.05;
                 }
 
             }
@@ -304,6 +365,8 @@
                 gameState = true;
             } else if (key == 'c') {
                 mode = 1;
+            } else if ((key == 'r') && (mode == 1)) {
+                mode = 2;
             }
         }
 

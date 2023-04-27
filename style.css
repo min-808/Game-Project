@@ -7,21 +7,17 @@ body {
     background-color: #c6ffc6;
 }
 
-#staminaTitle, #snakesTitle, #damageTitle {
+#snakesTitle, #goldTitle {
     position: absolute;
     font-size: 40px;
 }
 
-#staminaValue, #snakesValue, #damageValue {
+#snakesValue, #goldValue {
     font-weight: bold;
 }
 
 #snakesTitle {
     top: 55px;
-}
-
-#damageTitle {
-    top: 110px;
 }
 
 #frames {
