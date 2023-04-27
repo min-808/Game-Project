@@ -4,7 +4,7 @@ body {
     border: 0;
     overflow: hidden;
 
-    background-color: rgb(198, 255, 198);
+    background-color: #c6ffc6;
 }
 
 #staminaTitle, #snakesTitle, #damageTitle {

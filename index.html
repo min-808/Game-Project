@@ -10,7 +10,6 @@
     </style>
 </head>
 <body>
-    <span id="staminaTitle">Stamina: <span id="staminaValue">placeholder</span></span>
     <span id="snakesTitle">Snakes Hit: <span id="snakesValue">0</span></span>
 
     <span id="frames">FPS: <span id="framesValue">placeholder</span></span>
@@ -19,21 +18,29 @@
         let w = window.innerWidth;
         let h = window.innerHeight;
 
+        var health = 100;
+        var maxHealth = 100;
+
         var stamina = 60;
+        var maxStamina = 60;
+
+        var level = 1;
+        var experience = 0;
+
         var hit = false;
 
-        var execute;
-        var counter = 0;
+        var counter = 0; // snakes hit
         var gameState = true;
+        var mode = 0;
 
         var bullets = [];
+        var bulletsTest = []; // temporary array to store instruction bullets
         var snakeAmount = [];
         //var hitboxes = [];
 
         var player = new player();
         var hitbox = new hitbox();
-
-        var invis = new invisibleHitBox();
+        var instructions = new instructions();
 
         var drawCursor = new drawCursor();
         var drawLine = new drawLine();
@@ -47,137 +54,238 @@
             knight = loadImage("knight.png");
             snake = loadImage("snake.png");
 
-            for (var s = 0; s < 25; s++) { // s is snake amount
-                task(s);
-            }
-
-            function task(s) {
-                setTimeout(function() {
-
-                    let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
-                    snakeAmount.push(s);
-
-                    console.log(snakeAmount);
-
-                }, 200 * s) // timer is in ms
-            }
+            let seconds = (millis() / 1000).toFixed(0); // timer
         }
 
         function draw() {
-            
-            clear();
-            document.getElementById("staminaValue").innerText = stamina.toFixed(0);
-            document.getElementById("framesValue").innerText = frameRate().toFixed(2);
 
-            let seconds = (millis() / 1000).toFixed(0); // timer
+            if (mode == 0) {
+                clear();
+                document.getElementById("snakesTitle").style.visibility = "hidden";
+                document.getElementById("frames").style.visibility = "hidden";
+                document.body.style.backgroundColor = "lightgray";
 
-            if (stamina >= 60) {
-                stamina = 60;
-            }
+                player.show();
+                player.update();
 
-            if (stamina < 60) {
-                stamina += 0.03;
-            }
+                hitbox.show();
+                hitbox.update();
 
-            if ((player.health < player.maxHealth) && (!player.health <= 0)) {
-                player.health += 0.05;
-            }
+                player.displayHealthBars();
+                player.updateHealthBars();
 
+                player.displayStaminaBars();
+                player.updateStaminaBars();
 
-            drawLine.show();
-            drawLine.update();
+                player.displayLevel();
+                player.updateLevel();
 
-            drawCursor.show();
-            drawCursor.update();
-            noCursor();
-
-            player.show();
-            player.update();
-
-            player.displayHealthBars();
-            player.updateHealthBars();
-
-            hitbox.hitReg();
-
-            hitbox.show();
-            hitbox.update();
-
-            //checkHealthStatus();
-            //checkStaminaStatus();
-
-            if (keyIsDown(87)) {
-                player.up();
-                pos = "up";
-            }
-            if (keyIsDown(83)) {
-                player.down();
-                pos = "down";
-            }
-            if (keyIsDown(65)) {
-                player.left();
-                pos = "left";
-            }
-            if (keyIsDown(68)) {
-                player.right();
-                pos = "right";
-            }
-
-            /*if (keyIsDown(77)) {
-                weapon.show();
-                weapon.update();
-            }
-
-            if (!keyIsDown(77)) {
-                weapon.fade();
-            }*/
-
-            for (var sn = 0; sn < snakeAmount.length; sn++) {
-                snakeAmount[sn].display();
-                snakeAmount[sn].move();
-
-                snakeAmount[sn].displayHealthBars();
-                snakeAmount[sn].updateHealthBars();
-
-                //hitboxes[sn].display();
-                //hitboxes[sn].update();
-            }
-            
-            for (var j = bullets.length - 1; j >= 0; j--) {
-                bullets[j].display();
-                bullets[j].move();
-
-                //if (bullets[j].yPos < 0) {
-                    //bullets.splice(j, 1);
-                //}
-
-                for (var i = snakeAmount.length - 1; i >= 0; i--) {
-
-                    var hit = collideRectRect(bullets[j].getxPos(), bullets[j].getyPos(), bullets[j].getWidth(), bullets[j].getHeight(), snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight());
-
-                    if (hit == true) {
-                        snakeAmount[i].addCount(1);
-                        //console.log(hit + " " + snakeAmount[i].getCount())
-
-                        if (snakeAmount[i].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
-                            counter++;
-                            document.getElementById("snakesValue").innerText = counter;
-
-                            bullets.splice(j, 1);
-                            snakeAmount.splice(i, 1);
-                            
-                            break;
-                        }
-                    }
-
+                for (var j = bullets.length - 1; j >= 0; j--) {
+                    bulletsTest[j].display();
+                    bulletsTest[j].move();
                 }
+
+                if (stamina >= 60) {
+                    stamina = 60;
+                }
+
+                if (stamina < 60) {
+                    stamina += 0.03;
+                }
+
+                if (keyIsDown(87)) {
+                    player.up();
+                    pos = "up";
+                }
+                if (keyIsDown(83)) {
+                    player.down();
+                    pos = "down";
+                }
+                if (keyIsDown(65)) {
+                    player.left();
+                    pos = "left";
+                }
+                if (keyIsDown(68)) {
+                    player.right();
+                    pos = "right";
+                }
+
+                instructions.inst1();
+                instructions.arrowMove();
+
             }
 
+            if (mode == 1) {
+
+                bulletsTest.length = 0;
+
+                if (snakeAmount.length < 1) { // essentially, only run this for loop once in the draw function.
+                    for (var s = 0; s < 25; s++) { // s is snake amount
+                        task(s);
+                    }
+                }
+            
+                clear();
+
+                document.getElementById("snakesTitle").style.visibility = "visible";
+                document.getElementById("frames").style.visibility = "visible";
+                document.body.style.backgroundColor = "#c6ffc6"
+
+                document.getElementById("framesValue").innerText = frameRate().toFixed(2);
+
+                if (stamina >= 60) {
+                    stamina = 60;
+                }
+
+                if (stamina < 60) {
+                    stamina += 0.03;
+                }
+
+                if ((player.health < player.maxHealth) && (!player.health <= 0)) {
+                    player.health += 0.05;
+                }
+
+                if (player.health <= 0) {
+                    //mode = "dead";
+                }
+
+                // LEVELING SYSTEM W/ EXPERIENCE
+
+                if ((experience > 30) && (experience < 90)) {
+                    level = 2;
+                } else if ((experience >= 90) && (experience < 200)) {
+                    level = 3;
+                } else if ((experience >= 200) && (experience < 400)) {
+                    level = 4;
+                }
+
+
+                drawLine.show();
+                drawLine.update();
+
+                drawCursor.show();
+                drawCursor.update();
+                noCursor();
+
+                player.show();
+                player.update();
+
+                player.displayHealthBars();
+                player.updateHealthBars();
+
+                player.displayStaminaBars();
+                player.updateStaminaBars();
+
+                player.displayLevel();
+                player.updateLevel();
+
+                hitbox.hitReg();
+
+                hitbox.show();
+                hitbox.update();
+                
+                if (keyIsDown(87)) {
+                    player.up();
+                    pos = "up";
+                }
+                if (keyIsDown(83)) {
+                    player.down();
+                    pos = "down";
+                }
+                if (keyIsDown(65)) {
+                    player.left();
+                    pos = "left";
+                }
+                if (keyIsDown(68)) {
+                    player.right();
+                    pos = "right";
+                }
+
+                /*if (keyIsDown(77)) {
+                    weapon.show();
+                    weapon.update();
+                }
+
+                if (!keyIsDown(77)) {
+                    weapon.fade();
+                }*/
+
+                for (var sn = 0; sn < snakeAmount.length; sn++) {
+                    snakeAmount[sn].display();
+                    snakeAmount[sn].move();
+
+                    snakeAmount[sn].displayHealthBars();
+                    snakeAmount[sn].updateHealthBars();
+
+                    //hitboxes[sn].display();
+                    //hitboxes[sn].update();
+                }
+                
+                for (var j = bullets.length - 1; j >= 0; j--) {
+                    bullets[j].display();
+                    bullets[j].move();
+
+                    //if (bullets[j].yPos < 0) {
+                        //bullets.splice(j, 1);
+                    //}
+
+                    for (var i = snakeAmount.length - 1; i >= 0; i--) {
+
+                        var hit = collideRectRect(bullets[j].getxPos(), bullets[j].getyPos(), bullets[j].getWidth(), bullets[j].getHeight(), snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight());
+
+                        if (hit == true) {
+                            snakeAmount[i].addCount(1);
+                            //console.log(hit + " " + snakeAmount[i].getCount())
+
+                            if (snakeAmount[i].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
+                                counter++;
+                                document.getElementById("snakesValue").innerText = counter;
+
+                                bullets.splice(j, 1);
+                                snakeAmount.splice(i, 1);
+                                
+                                experience += 5;
+
+                                break;
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+            /* wip death screen
+            if (mode == "dead") {
+                document.getElementById("snakesTitle").style.visibility = "hidden";
+                document.getElementById("frames").style.visibility = "hidden";
+
+                death.show();
+            }
+            */
+    }
+
+        function task(s) { // settimeout to add a delay in between for loop iterations
+            setTimeout(function() {
+
+                let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
+                snakeAmount.push(s);
+
+                console.log(snakeAmount);
+
+            }, 200 * s) // timer is in ms
         }
 
         function mousePressed() {
             if (stamina > 5) { // implementing stamina system
+
                 let mouseVector = getMouseVector();
                 let b = new shoot(mouseVector.x, mouseVector.y);
+
+                if (mode == 0) {
+                    bulletsTest.push(b);
+                }
+
                 bullets.push(b);
 
                 stamina -= 5;
@@ -194,8 +302,26 @@
             } else if ((key == "p") && gameState == false) {
                 loop();
                 gameState = true;
+            } else if (key == 'c') {
+                mode = 1;
             }
+        }
 
+        function keyPressed() {
+            if ((keyCode == RIGHT_ARROW) && (mode == 0)) {
+                instructions.currentPage++;
+
+                if (instructions.currentPage > instructions.maxPages) { // don't overflow
+                    instructions.currentPage = instructions.maxPages
+                }
+            } else if ((keyCode == LEFT_ARROW) && (mode == 0)) {
+
+                instructions.currentPage--;
+
+                if (instructions.currentPage < 1) { // don't underflow
+                    instructions.currentPage = 1;
+                }
+            }
         }
 
         // SCRAPPED WEAPON SYSTEM

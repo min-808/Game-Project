@@ -6,6 +6,12 @@ function getMouseVector() {
     return mouseDir;
 }
 
+function getRandomVectorToPlayer() {
+    let dir = createVector(random(0, w), player.xPos);
+    dir.normalize();
+    return dir;
+}
+
 function drawCursor() {
     this.radius = 30;
 
@@ -42,17 +48,77 @@ function drawLine() {
         this.xPos2 = mouseX;
         this.yPos2 = mouseY;
     }
+}
 
+function instructions() {
+    this.instWidth = 1000;
+    this.instHeight = 320;
+    this.instxPos = w/2;
+    this.instyPos = 100
+
+    this.arrowWidth = 100;
+    this.arrowHeight = 100;
+    this.arrowxPos = w/2 + 100;
+    this.arrowyPos = 300;
+
+    this.currentPage = 1;
+    this.maxPages = 6;
+
+    this.inst1 = function() {
+        fill(0,0,0,100);
+        rectMode(CENTER)
+        rect(this.instxPos, this.instyPos, this.instWidth, this.instHeight)
+        if (this.currentPage == 1) {
+            noStroke()
+            textSize(25)
+            fill(255,255,255)
+            textAlign(CENTER)
+            textStyle(NORMAL)
+            text("Hello! Welcome to my game", this.instxPos, this.instyPos)
+            text("This is a 2-D shooter where you shoot at enemies to gain gold and experience", this.instxPos, this.instyPos + 40)
+            text("You can use the gold to purchase upgrades, and the experience strengthens your stats", this.instxPos, this.instyPos + 80)
+        } else if (this.currentPage == 2) {
+            noStroke()
+            textSize(25)
+            fill(255,255,255)
+            textAlign(CENTER)
+            textStyle(NORMAL)
+            text("You can move around with WASD and shoot by clicking on the screen", this.instxPos, this.instyPos)
+            text("The gray box around you is your hitbox. If enemies enter it, you will take damage", this.instxPos, this.instyPos + 40)
+            text("Additionally, shooting depletes your stamina bar. You can't shoot if this reaches 0", this.instxPos, this.instyPos + 80)
+            text("Health and stamina gradually regenerate over time", this.instxPos, this.instyPos + 120)
+        } else if (this.currentPage == 3) {
+            noStroke()
+            textSize(25)
+            fill(255,255,255)
+            textAlign(CENTER)
+            textStyle(NORMAL)
+            text("Power-ups that boost your movement speed, gold, and despawn enemies will appear", this.instxPos, this.instyPos)
+            text("These will disappear after a while, and bullets begin shooting around them", this.instxPos, this.instyPos + 40)
+        }
+    }
+
+
+
+    this.arrowMove = function() {
+        textSize(15)
+        textStyle(BOLD)
+        textAlign(CENTER)
+        fill(0,0,0)
+        text("You can use the arrow keys LEFT/RIGHT to navigate the instructions", this.instxPos, this.instyPos + 200)
+        text(this.currentPage + " / " + this.maxPages, this.instxPos, this.instyPos - 60)
+    }
 }
 
 function hitbox() {
-    this.width = 180;
-    this.height = 180;
+    this.width = 220;
+    this.height = 220;
 
     this.xPos = player.xPos;
     this.yPos = player.yPos;
 
     this.show = function() {
+        stroke(0)
         rectMode(CENTER);
         fill(0, 0, 0, 35);
         rect(this.xPos, this.yPos, this.width, this.height);
@@ -78,34 +144,13 @@ function hitbox() {
             var hitPlayer = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, snakeAmount[h].getxPos(), snakeAmount[h].getyPos(), snakeAmount[h].getWidth(), snakeAmount[h].getHeight())
         
             if (hitPlayer) {
-                player.takingDamage(10); // invokes the take damage function and makes player lose hp
+                player.takingDamage(50); // invokes the take damage function and makes player lose hp
                 console.log('hit')
             }
 
         }
 
     }   
-}
-
-class invisibleHitBox {
-    constructor() {
-        this.width = 180;
-        this.height = 180;
-
-        this.xPos = player.xPos;
-        this.yPos = player.yPos;
-    }
-
-    display() {
-        rectMode(CENTER);
-        fill(0,0,0,0);
-        rect(this.xPos, this.yPos, this.width, this.height);
-    }
-
-    update() {
-        this.xPos = player.xPos;
-        this.yPos = player.yPos;
-    }
 }
 
 function player() {
@@ -115,8 +160,12 @@ function player() {
     this.xPos = w/2;
     this.yPos = h/2;
 
-    this.health = 100;
-    this.maxHealth = 100;
+    //this.level = level                            Use the global variable for the level
+    this.lxPos = this.xPos;
+    this.lyPos = this.yPos - 65;
+
+    this.health = health;
+    this.maxHealth = maxHealth;
     this.hxPos = this.xPos - this.hWidth / 2;
     this.hyPos = this.yPos + 60;
     this.hWidth = 160;
@@ -126,9 +175,35 @@ function player() {
     this.hColorG = 0;
     this.hColorB = 0;
 
+    //this.stamina = stamina;                       Use the global variable stamina for the stamina
+    //this.maxStamina = maxStamina;
+    this.sxPos = this.xPos - this.sWidth / 2;
+    this.syPos = this.yPos + 80;
+    this.sWidth = 160;
+    this.sHeight = 15;
+
+    this.sColorR = 0;
+    this.sColorG = 0;
+    this.sColorB = 255;
+
     this.show = function() {
         imageMode(CENTER);
         image(knight, this.xPos, this.yPos, this.width, this.height);
+    }
+
+    this.displayLevel = function() {
+        fill(0,0,0);
+        textSize(20);
+        textAlign(CENTER)
+        textStyle(BOLD)
+        text("Lv. " + level, this.lxPos, this.lyPos);
+    }
+
+    this.updateLevel = function() {
+        level = level;
+
+        this.lxPos = this.xPos;
+        this.lyPos = this.yPos - 65;
     }
 
     this.displayHealthBars = function() {
@@ -145,6 +220,7 @@ function player() {
         textSize(13);
         //textStyle(BOLD)
         textAlign(CENTER)
+        textStyle(NORMAL)
         text(this.health.toFixed(0) + " / " + this.maxHealth.toFixed(0), this.xPos, this.hyPos + 12);
     }
 
@@ -156,6 +232,34 @@ function player() {
             this.health = 0;
         }
         console.log(this.health)
+    }
+
+    this.displayStaminaBars = function() {
+        rectMode(CORNER)
+        fill(this.sColorR, this.sColorG, this.sColorB, 20);
+        rect(this.sxPos, this.syPos, this.sWidth, this.sHeight) // Outer Stamina box
+
+        noStroke()
+        fill(this.sColorR, this.sColorG, this.sColorB, 100);
+        rect(this.sxPos, this.syPos, map(stamina, 0, maxStamina, 0, 160), this.sHeight); // Inner Stamina box
+        stroke(0)
+
+        fill(0,0,0)
+        textSize(13);
+        //textStyle(BOLD)
+        textAlign(CENTER)
+        textStyle(NORMAL)
+        text(stamina.toFixed(0) + " / " + maxStamina.toFixed(0), this.xPos, this.syPos + 12);
+    }
+
+    this.updateStaminaBars = function() {
+        this.sxPos = this.xPos - this.sWidth / 2;
+        this.syPos = this.yPos + 80;
+        
+        if (stamina <= 0) {
+            stamina = 0;
+        }
+        //console.log(this.stamina)
     }
 
     this.takingDamage = function(amount) {
@@ -294,7 +398,7 @@ class enemy {
         this.width = 80;
         this.height = 80;
 
-        this.speed = 215; // Higher number is slower
+        this.speed = 200; // Higher number is slower
         this.editSpeed = speed_;
 
         this.xPos = w - alt_x;
@@ -441,4 +545,10 @@ class shoot {
         return this.height;
     }
     
+}
+
+class powerup {
+    constructor(xNum, yNum) {
+        //
+    }
 }
