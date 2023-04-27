@@ -78,7 +78,7 @@ function hitbox() {
             var hitPlayer = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, snakeAmount[h].getxPos(), snakeAmount[h].getyPos(), snakeAmount[h].getWidth(), snakeAmount[h].getHeight())
         
             if (hitPlayer) {
-                document.getElementById("damageValue").textContent = "you were hit";
+                player.takingDamage(10); // invokes the take damage function and makes player lose hp
                 console.log('hit')
             }
 
@@ -115,9 +115,52 @@ function player() {
     this.xPos = w/2;
     this.yPos = h/2;
 
+    this.health = 100;
+    this.maxHealth = 100;
+    this.hxPos = this.xPos - this.hWidth / 2;
+    this.hyPos = this.yPos + 60;
+    this.hWidth = 160;
+    this.hHeight = 15;
+
+    this.hColorR = 255;
+    this.hColorG = 0;
+    this.hColorB = 0;
+
     this.show = function() {
         imageMode(CENTER);
         image(knight, this.xPos, this.yPos, this.width, this.height);
+    }
+
+    this.displayHealthBars = function() {
+        rectMode(CORNER)
+        fill(this.hColorR, this.hColorG, this.hColorB, 20);
+        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight) // Outer HP box
+
+        noStroke()
+        fill(this.hColorR, this.hColorG, this.hColorB, 100);
+        rect(this.hxPos, this.hyPos, map(this.health, 0, this.maxHealth, 0, 160), this.hHeight); // Inner HP box
+        stroke(0)
+
+        fill(0,0,0)
+        textSize(13);
+        //textStyle(BOLD)
+        textAlign(CENTER)
+        text(this.health.toFixed(0) + " / " + this.maxHealth.toFixed(0), this.xPos, this.hyPos + 12);
+    }
+
+    this.updateHealthBars = function() {
+        this.hxPos = this.xPos - this.hWidth / 2;
+        this.hyPos = this.yPos + 60;
+        
+        if (this.health <= 0) {
+            this.health = 0;
+        }
+        console.log(this.health)
+    }
+
+    this.takingDamage = function(amount) {
+        this.health -= amount / 100;
+        this.health.toFixed(0);
     }
 
     this.update = function() { // Bounds

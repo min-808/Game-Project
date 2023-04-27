@@ -11,8 +11,7 @@
 </head>
 <body>
     <span id="staminaTitle">Stamina: <span id="staminaValue">placeholder</span></span>
-    <span id="snakesTitle">Snakes Hit: <span id="snakesValue">placeholder</span></span>
-    <span id="damageTitle">Took Damage?: <span id="damageValue">placeholder</span></span>
+    <span id="snakesTitle">Snakes Hit: <span id="snakesValue">0</span></span>
 
     <span id="frames">FPS: <span id="framesValue">placeholder</span></span>
     <script>
@@ -25,6 +24,7 @@
 
         var execute;
         var counter = 0;
+        var gameState = true;
 
         var bullets = [];
         var snakeAmount = [];
@@ -47,39 +47,20 @@
             knight = loadImage("knight.png");
             snake = loadImage("snake.png");
 
-            for (var s = 0; s < 20; s++) { // s is snake amount
-                
-                /* fix this later, better randomization for spawns
-                var quad = random(0, 3);
-
-                var xQuad = 0;
-                var yQuad = 0;
-
-                if (quad == 0) {
-                    xQuad = random(0, w);
-                    yQuad = random(-100, 0);
-                } else if (quad == 1) {
-                    xQuad = random(w, 100);
-                    yQuad = random(0, h);
-                } else if (quad == 2) {
-                    xQuad = random(0, w);
-                    yQuad = random(h, 100);
-                } else if (quad == 3) {
-                    xQuad = random(-100, 0);
-                    yQuad = random(0, h);
-                }
-                */
-
-                let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
-                //let hb = new invisibleHitBox();
-
-                snakeAmount.push(s);
-                //hitboxes.push(hb);
-
-                console.log(snakeAmount);
-                //console.log(hitboxes);
+            for (var s = 0; s < 25; s++) { // s is snake amount
+                task(s);
             }
 
+            function task(s) {
+                setTimeout(function() {
+
+                    let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
+                    snakeAmount.push(s);
+
+                    console.log(snakeAmount);
+
+                }, 200 * s) // timer is in ms
+            }
         }
 
         function draw() {
@@ -94,6 +75,15 @@
                 stamina = 60;
             }
 
+            if (stamina < 60) {
+                stamina += 0.03;
+            }
+
+            if ((player.health < player.maxHealth) && (!player.health <= 0)) {
+                player.health += 0.05;
+            }
+
+
             drawLine.show();
             drawLine.update();
 
@@ -103,6 +93,9 @@
 
             player.show();
             player.update();
+
+            player.displayHealthBars();
+            player.updateHealthBars();
 
             hitbox.hitReg();
 
@@ -182,11 +175,27 @@
         }
 
         function mousePressed() {
-            let mouseVector = getMouseVector();
-            let b = new shoot(mouseVector.x, mouseVector.y);
-            bullets.push(b);
+            if (stamina > 5) { // implementing stamina system
+                let mouseVector = getMouseVector();
+                let b = new shoot(mouseVector.x, mouseVector.y);
+                bullets.push(b);
 
-            stamina -= 5;
+                stamina -= 5;
+            } else if (stamina < 5) {
+                console.log('out of stamina!');
+                //
+            }
+        }
+
+        function keyTyped() {
+            if ((key == "p") && gameState == true) {
+                noLoop();
+                gameState = false;
+            } else if ((key == "p") && gameState == false) {
+                loop();
+                gameState = true;
+            }
+
         }
 
         // SCRAPPED WEAPON SYSTEM
