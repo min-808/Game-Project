@@ -62,7 +62,7 @@ function instructions() {
     this.arrowyPos = 300;
 
     this.currentPage = 1;
-    this.maxPages = 6;
+    this.maxPages = 5;
 
     this.inst1 = function() {
         fill(0,0,0,100);
@@ -83,7 +83,7 @@ function instructions() {
             fill(255,255,255)
             textAlign(CENTER)
             textStyle(NORMAL)
-            text("You can move around with WASD and shoot by clicking on the screen", this.instxPos, this.instyPos)
+            text("You move around with WASD and shoot by clicking on the screen", this.instxPos, this.instyPos)
             text("The gray box around you is your hitbox. If enemies enter it, you will take damage", this.instxPos, this.instyPos + 40)
             text("Additionally, shooting depletes your stamina bar. You can't shoot if this reaches 0", this.instxPos, this.instyPos + 80)
             text("Health and stamina gradually regenerate over time", this.instxPos, this.instyPos + 120)
@@ -93,8 +93,24 @@ function instructions() {
             fill(255,255,255)
             textAlign(CENTER)
             textStyle(NORMAL)
-            text("Power-ups that boost your movement speed, gold, and despawn enemies will appear", this.instxPos, this.instyPos)
-            text("These will disappear after a while, and bullets begin shooting around them", this.instxPos, this.instyPos + 40)
+            text("If you press the [R] key while in a level, you will be sent to the Nexus", this.instxPos, this.instyPos)
+            text("In the Nexus, there's a shop to purchase power-ups and upgrades", this.instxPos, this.instyPos + 40)
+        } else if (this.currentPage == 4) {
+            noStroke()
+            textSize(25)
+            fill(255,255,255)
+            textAlign(CENTER)
+            textStyle(NORMAL)
+            text("As you progress in level, the enemies will change and get harder", this.instxPos, this.instyPos)
+            text("It begins with snakes, then slimes, to golems", this.instxPos, this.instyPos + 40)
+            text("You win when you hit level 20!", this.instxPos, this.instyPos + 120)
+        } else if (this.currentPage == 5) {
+            noStroke()
+            textSize(35)
+            fill(255,255,255)
+            textAlign(CENTER)
+            textStyle(NORMAL)
+            text("Good luck, and have fun!", this.instxPos, this.instyPos + 60)
         }
     }
 
@@ -105,8 +121,33 @@ function instructions() {
         textStyle(BOLD)
         textAlign(CENTER)
         fill(0,0,0)
-        text("You can use the arrow keys LEFT/RIGHT to navigate the instructions", this.instxPos, this.instyPos + 200)
+        text("Use the arrow keys LEFT/RIGHT to navigate the instructions", this.instxPos, this.instyPos + 200)
         text(this.currentPage + " / " + this.maxPages, this.instxPos, this.instyPos - 60)
+    }
+}
+
+function start() {
+    mode = 1;
+    document.getElementById("start").style.visibility = "hidden";
+
+    stamina = maxStamina;
+}
+
+function tip() {
+    this.instxPos = w/2;
+    this.instyPos = 100
+
+    this.fade = 0;
+
+    this.show = function() {
+        this.fade += 1
+        noStroke()
+        textSize(20)
+        fill(0,0,0, this.fade)
+        textAlign(CENTER)
+        textStyle(BOLD)
+        text("[TIP] : You can press [R] to go to the Nexus and buy upgrades", this.instxPos, this.instyPos - 20)
+        stroke(0)
     }
 }
 
@@ -127,14 +168,14 @@ function shop() {
         noStroke()
         text("Welcome to the Nexus!", this.instxPos, this.instyPos - 40);
         text("Here you can regenerate your HP and Stamina without being attacked", this.instxPos, this.instyPos);
-        text("You can click the button on the right to access the shop", this.instxPos, this.instyPos + 40);
-        text("Return to your level by clicking the button on the left", this.instxPos, this.instyPos + 120);
+        text("You can click the 'shop' button to open/close the shop", this.instxPos, this.instyPos + 80);
+        text("You can click the 'return' button to return to the level", this.instxPos, this.instyPos + 120);
     }
 }
 
 function hitbox() {
-    this.width = 220;
-    this.height = 220;
+    this.width = 240;
+    this.height = 240;
 
     this.xPos = player.xPos;
     this.yPos = player.yPos;
@@ -161,18 +202,67 @@ function hitbox() {
 
 
     this.hitReg = function() {
-        for (var h = 0; h < snakeAmount.length; h++) {
+        if ((level >= 1) && (level < 5)) {
+            for (var h = 0; h < snakeAmount.length; h++) {
 
-            var hitPlayer = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, snakeAmount[h].getxPos(), snakeAmount[h].getyPos(), snakeAmount[h].getWidth(), snakeAmount[h].getHeight())
-        
-            if (hitPlayer) {
-                player.takingDamage(50); // invokes the take damage function and makes player lose hp
-                console.log('hit')
+                var hitPlayer = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, snakeAmount[h].getxPos(), snakeAmount[h].getyPos(), snakeAmount[h].getWidth(), snakeAmount[h].getHeight())
+            
+                if (hitPlayer) {
+                    player.takingDamage(50); // invokes the take damage function and makes player lose hp
+                }
+
             }
-
         }
 
-    }   
+        if ((level >= 5) && (level < 10)) {
+            for (var p = 0; p < slimeAmount.length; p++) {
+
+                var hitPlayer2 = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, slimeAmount[p].getxPos(), slimeAmount[p].getyPos(), slimeAmount[p].getWidth(), slimeAmount[p].getHeight())
+            
+                if (hitPlayer2) {
+                    player.takingDamage(50); // invokes the take damage function and makes player lose hp
+                }
+
+            }
+        }
+
+        if ((level >= 10) && (level < 15)) {
+            for (var w = 0; w < blobAmount.length; w++) {
+
+                var hitPlayer3 = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, blobAmount[w].getxPos(), blobAmount[w].getyPos(), blobAmount[w].getWidth(), blobAmount[w].getHeight())
+            
+                if (hitPlayer3) {
+                    player.takingDamage(50); // invokes the take damage function and makes player lose hp
+                }
+
+            }
+        }
+
+        if ((level >= 15) && (level < 20)) {
+            for (var y = 0; y < golemAmount.length; y++) {
+
+                var hitPlayer4 = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, golemAmount[y].getxPos(), golemAmount[y].getyPos(), golemAmount[y].getWidth(), golemAmount[y].getHeight())
+            
+                if (hitPlayer4) {
+                    player.takingDamage(50); // invokes the take damage function and makes player lose hp
+                }
+
+            }
+        }
+
+        if (level == 20) {
+            for (var z = 0; z < dragonAmount.length; z++) {
+
+                var hitPlayer5 = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, dragonAmount[z].getxPos(), dragonAmount[z].getyPos(), dragonAmount[z].getWidth(), dragonAmount[z].getHeight())
+            
+                if (hitPlayer5) {
+                    player.takingDamage(50); // invokes the take damage function and makes player lose hp
+                }
+
+            }
+        }
+
+    }
 }
 
 function player() {
@@ -184,7 +274,15 @@ function player() {
 
     //this.level = level                            Use the global variable for the level
     this.lxPos = this.xPos;
+    this.lxBarPos = this.xPos - this.width / 2;
     this.lyPos = this.yPos - 65;
+    this.lyBarPos = this.yPos - 100;
+    this.lWidth = 80;
+    this.lHeight = 10;
+
+    this.lColorR = 160;
+    this.lColorG = 32;
+    this.lColorB = 240;
 
     this.health = health;
     this.maxHealth = maxHealth;
@@ -214,6 +312,15 @@ function player() {
     }
 
     this.displayLevel = function() {
+        rectMode(CORNER)
+        fill(this.lColorR, this.lColorG, this.lColorB, 20);
+        rect(this.lxBarPos, this.lyBarPos, this.lWidth, this.lHeight) // Outer LV box
+
+        noStroke()
+        fill(this.lColorR, this.lColorG, this.lColorB, 100);
+        rect(this.lxBarPos, this.lyBarPos, map(experience - prevExp, 0, neededExp - prevExp, 0, this.lWidth), this.lHeight); // Inner LV box
+        stroke(0)
+
         fill(0,0,0);
         textSize(20);
         textAlign(CENTER)
@@ -225,7 +332,9 @@ function player() {
         level = level;
 
         this.lxPos = this.xPos;
+        this.lxBarPos = this.xPos - this.width / 2
         this.lyPos = this.yPos - 65;
+        this.lyBarPos = this.yPos - 100;
     }
 
     this.displayHealthBars = function() {
@@ -253,7 +362,6 @@ function player() {
         if (this.health <= 0) {
             this.health = 0;
         }
-        console.log(this.health)
     }
 
     this.displayStaminaBars = function() {
@@ -281,7 +389,6 @@ function player() {
         if (stamina <= 0) {
             stamina = 0;
         }
-        //console.log(this.stamina)
     }
 
     this.takingDamage = function(amount) {
@@ -322,97 +429,18 @@ function player() {
     this.right = function() {
         this.xPos += 5;
     }
-    
 }
 
-/*function weapon() {
-    this.width = 100;
-    this.height = 10;
+/* 
+ENEMY NUMBER ONE
+ENEMY NUMBER ONE
+ENEMY NUMBER ONE
+ENEMY NUMBER ONE
+ENEMY NUMBER ONE
+ENEMY NUMBER ONE
+ENEMY NUMBER ONE
+*/
 
-    this.xPos = 300;
-    this.yPos = 300;
-
-    this.rRot = -90;
-
-    this.speed = 7;
-
-    this.opacity = 0;
-
-    this.show = function() {
-        rectMode(CORNER);
-        this.rRot += this.speed;
-        translate(player.xPos + player.height, player.yPos + player.width);
-        rotate(this.rRot);
-        translate(0,-100)
-
-        fill(135,135,135, this.opacity);
-        this.opacity += 20;
-        noStroke();
-        rect(0, 0, this.width, this.height);
-        stroke(0,0,0)
-
-        stamina -= 0.1;
-
-        if (stamina <= 0) {
-            stamina = 0;
-        }
-
-        if (stamina >= 60) {
-            stamina = 60;
-        }
-
-        if (this.opacity <= 0) {
-            this.opacity = 0;
-        }
-
-        if (this.opacity >= 300) {
-            this.opacity = 300;
-        }
-
-        console.log(this.xPos)
-    }
-
-    this.update = function() {
-        this.xPos = player.xPos;
-        this.yPos = player.yPos;
-    }
-
-    this.fade = function() {
-        rectMode(CORNER)
-        translate(player.xPos + player.height, player.yPos + player.width); // this might be the problem  cancel out the translate somehow to only do it to this object
-        rotate(this.rRot);
-        translate(0,-100)
-
-        this.opacity -= 20;
-
-        fill(135,135,135, this.opacity);
-        noStroke();
-        rect(0, 0, this.width, this.height);
-        stroke(0,0,0)
-
-        stamina += 0.08;
-
-        if (stamina <= 0) {
-            stamina = 0;
-        }
-
-        if (stamina >= 60) {
-            stamina = 60;
-        }
-
-        if (this.opacity <= 0) {
-            this.opacity = 0;
-        }
-
-        if (this.opacity >= 300) {
-            this.opacity = 300;
-        }
-    }
-
-    //this.swing = function() {
-        //
-    //}
-}*/
 
 class enemy {
 
@@ -444,6 +472,457 @@ class enemy {
 
     display() {
         image(snake, this.xPos, this.yPos, this.height, this.height);
+    }
+
+    displayHealthBars() {
+        fill(this.hColorR, this.hColorG, this.hColorB)
+        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight);
+    }
+
+    updateHealthBars() {
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+
+        if ((this.currentCount >= 1) && (this.currentCount <= 10)) {
+            this.hWidth -= 5;
+
+            this.hColorR += 10;
+            this.hColorG -= 5;
+            this.hColorB -= 5;
+
+            if (this.hWidth <= 30) {
+                this.hWidth = 30;
+            }
+
+            if (this.hColorG <= 213) {
+                this.hColorG = 213;
+            }
+
+            if (this.hColorB <= 128) {
+                this.hColorB = 128;
+            }
+        }
+
+        if ((this.currentCount > 10) && (this.currentCount <= 11)) {
+            this.hWidth -= 5;
+
+            if (this.hWidth <= 0) {
+                this.hWidth = 0;
+            }
+        }
+    }
+
+    move() {
+        this.xPos += (player.xPos - this.xPos /*+ this.alt/2*/) / (this.speed / this.editSpeed);
+        this.yPos += (player.yPos - this.yPos /*- this.alt/3*/) / (this.speed / this.editSpeed);
+    }
+
+    // GETTERS
+
+    getCount() {
+        return this.currentCount;
+    }
+
+    addCount(newCount) {
+        this.currentCount += newCount;
+    }
+
+    getxPos() {
+        return this.xPos;
+    }
+
+    getyPos() {
+        return this.yPos;
+    }
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
+    }
+}
+
+/* 
+ENEMY NUMBER TWO
+ENEMY NUMBER TWO
+ENEMY NUMBER TWO
+ENEMY NUMBER TWO
+ENEMY NUMBER TWO
+ENEMY NUMBER TWO
+ENEMY NUMBER TWO
+*/
+
+class enemy2 {
+
+    constructor(alt_x, alt_y, speed_) {
+        this.width = 80;
+        this.height = 80;
+
+        this.speed = 250; // Higher number is slower
+        this.editSpeed = speed_;
+
+        this.xPos = w - alt_x;
+        this.yPos = h - alt_y;
+
+        this.altX = alt_x;
+        this.altY = alt_y;
+
+        this.currentCount = 0;
+
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+        this.hWidth = 80;
+        this.hHeight = 10;
+        
+        this.hColorR = 144;
+        this.hColorG = 238;
+        this.hColorB = 144;
+
+    }
+
+    display() {
+        image(slime, this.xPos, this.yPos, this.height, this.height);
+    }
+
+    displayHealthBars() {
+        fill(this.hColorR, this.hColorG, this.hColorB)
+        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight);
+    }
+
+    updateHealthBars() {
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+
+        if ((this.currentCount >= 1) && (this.currentCount <= 10)) {
+            this.hWidth -= 5;
+
+            this.hColorR += 10;
+            this.hColorG -= 5;
+            this.hColorB -= 5;
+
+            if (this.hWidth <= 30) {
+                this.hWidth = 30;
+            }
+
+            if (this.hColorG <= 213) {
+                this.hColorG = 213;
+            }
+
+            if (this.hColorB <= 128) {
+                this.hColorB = 128;
+            }
+        }
+
+        if ((this.currentCount > 10) && (this.currentCount <= 11)) {
+            this.hWidth -= 5;
+
+            if (this.hWidth <= 0) {
+                this.hWidth = 0;
+            }
+        }
+    }
+
+    move() {
+        this.xPos += (player.xPos - this.xPos /*+ this.alt/2*/) / (this.speed / this.editSpeed);
+        this.yPos += (player.yPos - this.yPos /*- this.alt/3*/) / (this.speed / this.editSpeed);
+    }
+
+    // GETTERS
+
+    getCount() {
+        return this.currentCount;
+    }
+
+    addCount(newCount) {
+        this.currentCount += newCount;
+    }
+
+    getxPos() {
+        return this.xPos;
+    }
+
+    getyPos() {
+        return this.yPos;
+    }
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
+    }
+}
+
+/* 
+ENEMY NUMBER THREE
+ENEMY NUMBER THREE
+ENEMY NUMBER THREE
+ENEMY NUMBER THREE
+ENEMY NUMBER THREE
+ENEMY NUMBER THREE
+ENEMY NUMBER THREE
+ENEMY NUMBER THREE
+*/
+
+class enemy3 {
+
+    constructor(alt_x, alt_y, speed_) {
+        this.width = 80;
+        this.height = 80;
+
+        this.speed = 275; // Higher number is slower
+        this.editSpeed = speed_;
+
+        this.xPos = w - alt_x;
+        this.yPos = h - alt_y;
+
+        this.altX = alt_x;
+        this.altY = alt_y;
+
+        this.currentCount = 0;
+
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+        this.hWidth = 80;
+        this.hHeight = 10;
+        
+        this.hColorR = 144;
+        this.hColorG = 238;
+        this.hColorB = 144;
+
+    }
+
+    display() {
+        image(blob, this.xPos, this.yPos, this.height, this.height);
+    }
+
+    displayHealthBars() {
+        fill(this.hColorR, this.hColorG, this.hColorB)
+        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight);
+    }
+
+    updateHealthBars() {
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+
+        if ((this.currentCount >= 1) && (this.currentCount <= 10)) {
+            this.hWidth -= 5;
+
+            this.hColorR += 10;
+            this.hColorG -= 5;
+            this.hColorB -= 5;
+
+            if (this.hWidth <= 30) {
+                this.hWidth = 30;
+            }
+
+            if (this.hColorG <= 213) {
+                this.hColorG = 213;
+            }
+
+            if (this.hColorB <= 128) {
+                this.hColorB = 128;
+            }
+        }
+
+        if ((this.currentCount > 10) && (this.currentCount <= 11)) {
+            this.hWidth -= 5;
+
+            if (this.hWidth <= 0) {
+                this.hWidth = 0;
+            }
+        }
+    }
+
+    move() {
+        this.xPos += (player.xPos - this.xPos /*+ this.alt/2*/) / (this.speed / this.editSpeed);
+        this.yPos += (player.yPos - this.yPos /*- this.alt/3*/) / (this.speed / this.editSpeed);
+    }
+
+    // GETTERS
+
+    getCount() {
+        return this.currentCount;
+    }
+
+    addCount(newCount) {
+        this.currentCount += newCount;
+    }
+
+    getxPos() {
+        return this.xPos;
+    }
+
+    getyPos() {
+        return this.yPos;
+    }
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
+    }
+}
+
+/* 
+ENEMY NUMBER FOUR
+ENEMY NUMBER FOUR
+ENEMY NUMBER FOUR
+ENEMY NUMBER FOUR
+ENEMY NUMBER FOUR
+ENEMY NUMBER FOUR
+ENEMY NUMBER FOUR
+ENEMY NUMBER FOUR
+*/
+
+class enemy4 {
+
+    constructor(alt_x, alt_y, speed_) {
+        this.width = 80;
+        this.height = 80;
+
+        this.speed = 300; // Higher number is slower
+        this.editSpeed = speed_;
+
+        this.xPos = w - alt_x;
+        this.yPos = h - alt_y;
+
+        this.altX = alt_x;
+        this.altY = alt_y;
+
+        this.currentCount = 0;
+
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+        this.hWidth = 80;
+        this.hHeight = 10;
+        
+        this.hColorR = 144;
+        this.hColorG = 238;
+        this.hColorB = 144;
+
+    }
+
+    display() {
+        image(golem, this.xPos, this.yPos, this.height, this.height);
+    }
+
+    displayHealthBars() {
+        fill(this.hColorR, this.hColorG, this.hColorB)
+        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight);
+    }
+
+    updateHealthBars() {
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+
+        if ((this.currentCount >= 1) && (this.currentCount <= 10)) {
+            this.hWidth -= 5;
+
+            this.hColorR += 10;
+            this.hColorG -= 5;
+            this.hColorB -= 5;
+
+            if (this.hWidth <= 30) {
+                this.hWidth = 30;
+            }
+
+            if (this.hColorG <= 213) {
+                this.hColorG = 213;
+            }
+
+            if (this.hColorB <= 128) {
+                this.hColorB = 128;
+            }
+        }
+
+        if ((this.currentCount > 10) && (this.currentCount <= 11)) {
+            this.hWidth -= 5;
+
+            if (this.hWidth <= 0) {
+                this.hWidth = 0;
+            }
+        }
+    }
+
+    move() {
+        this.xPos += (player.xPos - this.xPos /*+ this.alt/2*/) / (this.speed / this.editSpeed);
+        this.yPos += (player.yPos - this.yPos /*- this.alt/3*/) / (this.speed / this.editSpeed);
+    }
+
+    // GETTERS
+
+    getCount() {
+        return this.currentCount;
+    }
+
+    addCount(newCount) {
+        this.currentCount += newCount;
+    }
+
+    getxPos() {
+        return this.xPos;
+    }
+
+    getyPos() {
+        return this.yPos;
+    }
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
+    }
+}
+
+/* 
+ENEMY NUMBER FIVE
+ENEMY NUMBER FIVE
+ENEMY NUMBER FIVE
+ENEMY NUMBER FIVE
+ENEMY NUMBER FIVE
+ENEMY NUMBER FIVE
+ENEMY NUMBER FIVE
+ENEMY NUMBER FIVE
+*/
+
+class enemy5 {
+
+    constructor(alt_x, alt_y, speed_) {
+        this.width = 80;
+        this.height = 80;
+
+        this.speed = 320; // Higher number is slower
+        this.editSpeed = speed_;
+
+        this.xPos = w - alt_x;
+        this.yPos = h - alt_y;
+
+        this.altX = alt_x;
+        this.altY = alt_y;
+
+        this.currentCount = 0;
+
+        this.hxPos = this.xPos;
+        this.hyPos = this.yPos + 50;
+        this.hWidth = 80;
+        this.hHeight = 10;
+        
+        this.hColorR = 144;
+        this.hColorG = 238;
+        this.hColorB = 144;
+
+    }
+
+    display() {
+        image(dragon, this.xPos, this.yPos, this.height, this.height);
     }
 
     displayHealthBars() {
@@ -564,9 +1043,125 @@ class shoot {
     }
     
 }
-
+ /*         SCRAPPED SYSTEM
 class powerup {
     constructor(xNum, yNum) {
-        //
+        // SCRAPPED
+    }
+}
+*/
+
+function doSomething() { // just a placeholder function for testing purposes
+    console.log("Something")
+}
+
+function toggleShop() {
+    if ((shopStatus == false) && (mode == 2)) {
+        document.getElementById("shopContainer").style.visibility = "visible"
+        document.getElementById("shopText").textContent = "Close Shop"
+        shopStatus = true;
+    } else if ((shopStatus == true) && (mode == 2)) {
+        document.getElementById("shopContainer").style.visibility = "hidden";
+        document.getElementById("shopText").textContent = "Open Shop"
+        shopStatus = false;
+    }
+}
+
+function returnToGame() {
+    if (mode == 2) {
+        mode = 1;
+    }
+}
+
+function staminaBoost() { // change stamina parameters in html cause its now greater than 60
+    if ((oneLevel <= 5) && (gold - oneRequired >= 0)) {
+        oneLevel++;
+        gold -= oneRequired;
+
+        if (oneLevel == 2) {
+            document.getElementById("staminaAdd").textContent = 10;
+            maxStamina += 5;
+            stamina = maxStamina;
+
+            oneRequired = 200;
+        } else if (oneLevel == 3) {
+            document.getElementById("staminaAdd").textContent = 20;
+            maxStamina += 10
+            stamina = maxStamina;
+
+            oneRequired = 500
+        } else if (oneLevel == 4) {
+            document.getElementById("staminaAdd").textContent = 50;
+            maxStamina += 20;
+            stamina = maxStamina;
+
+            oneRequired = 1000
+        }
+
+        if (oneLevel == 5) {
+            oneLevel = "MAX"
+            document.getElementById("itemOneDesc").textContent = "SOLD OUT";
+            document.getElementById("itemOneDesc").style.fontWeight = "bold";
+    
+            maxStamina += 50;
+            stamina = maxStamina;
+    
+    
+            document.getElementById("itemOneAdd").disabled = true;
+        }
+    }
+
+}
+
+function healthBoost() {
+    if ((twoLevel <= 5) && (gold - twoRequired >= 0)) {
+        twoLevel++;
+        gold -= twoRequired;
+    
+        if (twoLevel == 2) {
+            document.getElementById("healthAdd").textContent = 50;
+            player.maxHealth += 20;
+            player.health = player.maxHealth;
+    
+            twoRequired = 400;
+        } else if (twoLevel == 3) {
+            document.getElementById("healthAdd").textContent = 100;
+            player.maxHealth += 50;
+            player.health = player.maxHealth;
+    
+            twoRequired = 800
+        } else if (twoLevel == 4) {
+            document.getElementById("healthAdd").textContent = 200;
+            player.maxHealth += 100;
+            player.health = player.maxHealth;
+    
+            twoRequired = 1500
+        }
+
+        if (twoLevel == 5) {
+            twoLevel = "MAX"
+            document.getElementById("itemTwoDesc").textContent = "SOLD OUT";
+            document.getElementById("itemTwoDesc").style.fontWeight = "bold";
+    
+            player.maxHealth += 200;
+            player.health = player.maxHealth;
+    
+            document.getElementById("itemTwoAdd").disabled = true;
+        }
+    }
+}
+
+function damageBoost() {
+    if ((threeLevel <= 2) && (gold - threeRequired >= 0)) {
+        threeLevel++;
+        gold -= threeRequired;
+
+        if (threeLevel == 2) {
+            threeLevel = "MAX"
+            document.getElementById("itemThreeDesc").textContent = "SOLD OUT";
+            document.getElementById("itemThreeDesc").style.fontWeight = "bold";
+            
+            document.getElementById("itemThreeAdd").disabled = true;
+        }
     }
 }

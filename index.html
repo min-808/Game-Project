@@ -5,16 +5,84 @@
     <script src="game.js"></script>
     <script defer src="https://unpkg.com/p5.collide2d"></script>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@3000&display=swap" rel="stylesheet">
     <title>Game Project</title>
     <style>
     </style>
 </head>
 <body>
-    <span id="snakesTitle">Snakes Hit: <span id="snakesValue">0</span></span>
+    <span id="snakesTitle">Enemies Hit: <span id="snakesValue">0</span></span>
     <span id="goldTitle">Gold: <span id="goldValue">0</span></span>
 
     <span id="frames">FPS: <span id="framesValue">placeholder</span></span>
+
+    <div id="start" style="visibility: visible">
+        
+        <button id="startButton" onclick="start()">
+            <span id="startText">Start Game</span>
+        </button>
+
+    </div>
+
+    <div id="total" style="visibility: hidden">
+
+        <button id="shopButton" onclick="toggleShop()">
+            <span id="shopText">Open Shop</span>
+        </button>
+
+        <button id="returnButton" onclick="returnToGame()">
+            <span id="returnText">Return To Game</span>
+        </div>
+
+    </div>
+
+    <div id="shopContainer" style="visibility: hidden">
+
+        <div id="shopTitle">
+            <span id="lineOne">Welcome to the shop!</span>
+            <span id="lineTwo">Here, you can purchase upgrades to make fighting enemies easier</span>
+        </div>
+
+        <hr />
+
+        <div id="itemOne">
+            <div id="itemOneContent">
+                <img src="boost.png" id="staminaBoost">
+                <span id="itemOneName">Stamina Boost</span>
+                <span id="itemOneDesc">Permanently increases your stamina by <span id="staminaAdd" style="font-weight: bold">5</span></span>
+                <span id="itemOnePrice"><span id="oneGold">0</span> Gold</span>
+                <button id="itemOneAdd" onclick="staminaBoost()">Buy</button>
+                <span id="itemOneLevel">Current Level: <span id="oneLevel" style="font-weight: bold">0</span></span>
+            </div>
+        </div>
+
+        <div id="itemTwo">
+            <div id="itemTwoContent">
+                <img src="boost.png" id="healthBoost">
+                <span id="itemTwoName">Health Boost</span>
+                <span id="itemTwoDesc">Permanently increases your health by <span id="healthAdd" style="font-weight: bold">20</span></span>
+                <span id="itemTwoPrice"><span id="twoGold">0</span> Gold</span>
+                <button id="itemTwoAdd" onclick="healthBoost()">Buy</button>
+                <span id="itemTwoLevel">Current Level: <span id="twoLevel" style="font-weight: bold">0</span></span>
+            </div>
+        </div>
+
+        <div id="itemThree">
+            <div id="itemThreeContent">
+                <img src="boost.png" id="damageBoost">
+                <span id="itemThreeName">Damage Boost</span>
+                <span id="itemThreeDesc">Permanently increases your damage by 2x</span>
+                <span id="itemThreePrice"><span id="threeGold">0</span> Gold</span>
+                <button id="itemThreeAdd" onclick="damageBoost()">Buy</button>
+                <span id="itemThreeLevel">Current Level: <span id="threeLevel" style="font-weight: bold">0</span></span>
+            </div>
+        </div>
+
+    </div>
+
     <script>
+
+        // ALL THE VARIABLES
 
         let w = window.innerWidth;
         let h = window.innerHeight;
@@ -26,19 +94,35 @@
         var maxStamina = 60;
 
         var level = 1;
-        var experience = 0;
+        var experience = 3980
+        var neededExp = 30;
+        var prevExp = 0;
         var gold = 0;
+
+        var oneLevel = 1;
+        var twoLevel = 1;
+        var threeLevel = 1;
+
+        var oneRequired = 100;
+        var twoRequired = 200;
+        var threeRequired = 1200;
 
         var hit = false;
 
         var counter = 0; // snakes hit
         var gameState = true;
         var mode = 0;
+        var shopStatus = false;
+
+        var shown = false;
 
         var bullets = [];
         var bulletsTest = []; // temporary array to store instruction bullets
         var snakeAmount = [];
-        //var hitboxes = [];
+        var slimeAmount = [];
+        var blobAmount = [];
+        var golemAmount = [];
+        var dragonAmount = [];
 
         var player = new player();
         var hitbox = new hitbox();
@@ -48,25 +132,80 @@
         var drawCursor = new drawCursor();
         var drawLine = new drawLine();
 
+        var tip = new tip();
+
         //var weapon = new weapon();
 
         function setup() {
             frameRate(60);
             createCanvas(w,h);
             angleMode(DEGREES);
+
             knight = loadImage("knight.png");
             snake = loadImage("snake.png");
-
-            let seconds = (millis() / 1000).toFixed(0); // timer
+            slime = loadImage("slime.png");
+            blob = loadImage("blob.png");
+            golem = loadImage("golem.png");
+            dragon = loadImage("dragon.png");
         }
 
         function draw() {
 
-            if (mode == 0) {
+            // THESE ARE ALWAYS GOING TO HAPPEN NO MATTER WHAT!!
+
+            var seconds = (millis() / 1000).toFixed(0); // timer
+
+            document.getElementById("oneLevel").textContent = oneLevel;
+            document.getElementById("twoLevel").textContent = twoLevel;
+            document.getElementById("threeLevel").textContent = threeLevel;
+
+            document.getElementById("oneGold").innerHTML = oneRequired;
+            document.getElementById("twoGold").innerHTML = twoRequired;
+            document.getElementById("threeGold").innerHTML = threeRequired;
+
+            document.getElementById("framesValue").innerText = frameRate().toFixed(0);
+
+            if (stamina >= maxStamina) {
+                    stamina = maxStamina;
+            }
+            if (stamina < maxStamina) {
+                    stamina += 0.07;
+            }
+
+            if ((player.health < player.maxHealth) && (!player.health <= 0)) {
+                    player.health += 0.05;
+            }
+            if (player.health >= player.maxHealth) {
+                    player.health = player.maxHealth;
+            }
+            if (player.health <= 0) {
+                //mode = "dead";
+            }
+
+            if (keyIsDown(87)) {
+                player.up();
+                pos = "up";
+            }
+            if (keyIsDown(83)) {
+                player.down();
+                pos = "down";
+            }
+            if (keyIsDown(65)) {
+                player.left();
+                pos = "left";
+            }
+            if (keyIsDown(68)) {
+                player.right();
+                pos = "right";
+            }
+
+
+            if (mode == 0) {                                // IN TUTORIAL
                 clear();
                 document.getElementById("snakesTitle").style.visibility = "hidden";
                 document.getElementById("goldTitle").style.visibility = "hidden";
-                document.getElementById("frames").style.visibility = "hidden";
+
+                document.getElementById("total").style.visibility = "hidden";
 
                 document.body.style.backgroundColor = "lightgray";
 
@@ -90,43 +229,53 @@
                     bulletsTest[j].move();
                 }
 
-                if (stamina >= 60) {
-                    stamina = 60;
-                }
-
-                if (stamina < 60) {
-                    stamina += 0.03;
-                }
-
-                if (keyIsDown(87)) {
-                    player.up();
-                    pos = "up";
-                }
-                if (keyIsDown(83)) {
-                    player.down();
-                    pos = "down";
-                }
-                if (keyIsDown(65)) {
-                    player.left();
-                    pos = "left";
-                }
-                if (keyIsDown(68)) {
-                    player.right();
-                    pos = "right";
-                }
-
                 instructions.inst1();
                 instructions.arrowMove();
 
             }
 
-            if (mode == 1) {
+            if (mode == 1) {                                 // IN GAME
+                console.log(experience)
 
                 bulletsTest.length = 0;
 
-                if (snakeAmount.length < 1) { // essentially, only run this for loop once in the draw function.
-                    for (var s = 0; s < 25; s++) { // s is snake amount
-                        task(s);
+                if ((level >= 1) && (level < 5)) {
+                    if (snakeAmount.length < 1) { // essentially, only run this for loop once in the draw function.
+                        for (var s = 0; s < 5; s++) { // s is snake amount
+                            task(s);
+                        }
+                    }
+                }
+
+                if ((level >= 5) && (level < 10)) {
+                    if (slimeAmount.length < 1) {
+                        for (var s2 = 0; s2 < 10; s2++) {
+                            taskSlime(s2);
+                        }
+                    }
+                }
+
+                if ((level >= 10) && (level < 15)) {
+                    if (blobAmount.length < 1) {
+                        for (var s3 = 0; s3 < 10; s3++) {
+                            taskBlob(s3);
+                        }
+                    }
+                }
+
+                if ((level >= 15) && (level < 20)) {
+                    if (golemAmount.length < 1) {
+                        for (var s4 = 0; s4 < 5; s4++) {
+                            taskGolem(s4);
+                        }
+                    }
+                }
+
+                if (level == 20) {
+                    if (dragonAmount.length < 1) {
+                        for (var s5 = 0; s5 < 1; s5++) {
+                            taskDragon(s5);
+                        }
                     }
                 }
             
@@ -137,35 +286,119 @@
                 document.getElementById("frames").style.visibility = "visible";
                 document.body.style.backgroundColor = "#c6ffc6"
 
-                document.getElementById("framesValue").innerText = frameRate().toFixed(2);
                 document.getElementById("goldValue").innerText = gold;
 
-                if (stamina >= 60) {
-                    stamina = 60;
+                document.getElementById("total").style.visibility = "hidden";
+                document.getElementById("shopContainer").style.visibility = "hidden"
+
+                // LEVELING SYSTEM W/ EXPERIENCE (based on squares)
+
+                /*
+                LV 1 IS 0 EXP
+                LV2 IS 30 EXP
+                LV3 IS 80 EXP
+                LV4 IS 150 EXP
+                LV5 IS 240 EXP
+                LV6 IS 350 EXP
+                LV7 IS 480 EXP
+                LV8 IS 630 EXP
+                LV9 IS 800 EXP
+                LV10 IS 990 EXP
+                LV11 IS 1200 EXP
+                LV12 IS 1430 EXP
+                LV13 IS 1680 EXP
+                LV14 IS 1950 EXP
+                LV15 IS 2240 EXP
+                LV16 IS 2550 EXP
+                LV17 IS 2880 EXP
+                LV18 IS 3230 EXP
+                LV19 IS 3600 EXP
+                LV20 IS 4000 EXP
+                */
+
+                // prepare to see the most inefficient leveling checker of all time
+
+                if ((experience >= 30) && (experience < 80)) {
+                    level = 2
+                    neededExp = 80;
+                    prevExp = 30;
+                } else if ((experience >= 80) && (experience < 150)) {
+                    level = 3
+                    neededExp = 150;
+                    prevExp = 80;
+                } else if ((experience >= 150) && (experience < 240)) {
+                    level = 4
+                    neededExp = 240;
+                    prevExp = 150;
+                } else if ((experience >= 240) && (experience < 350)) {
+                    level = 5
+                    neededExp = 350;
+                    prevExp = 240;
+                } else if ((experience >= 350) && (experience < 480)) {
+                    level = 6
+                    neededExp = 480;
+                    prevExp = 350;
+                } else if ((experience >= 480) && (experience < 630)) {
+                    level = 7
+                    neededExp = 630;
+                    prevExp = 480;
+                } else if ((experience >= 630) && (experience < 800)) {
+                    level = 8
+                    neededExp = 800;
+                    prevExp = 630;
+                } else if ((experience >= 800) && (experience < 990)) {
+                    level = 9
+                    neededExp = 990;
+                    prevExp = 800;
+                } else if ((experience >= 990) && (experience < 1200)) {
+                    level = 10
+                    neededExp = 1200;
+                    prevExp = 990;
+                } else if ((experience >= 1200) && (experience < 1430)) {
+                    level = 11
+                    neededExp = 1430;
+                    prevExp = 1200;
+                } else if ((experience >= 1430) && (experience < 1680)) {
+                    level = 12
+                    neededExp = 1680;
+                    prevExp = 1430;
+                } else if ((experience >= 1680) && (experience < 1950)) {
+                    level = 13
+                    neededExp = 1950;
+                    prevExp = 1680;
+                } else if ((experience >= 1950) && (experience < 2240)) {
+                    level = 14
+                    neededExp = 2240;
+                    prevExp = 1950;
+                } else if ((experience >= 2240) && (experience < 2550)) {
+                    level = 15
+                    neededExp = 2550;
+                    prevExp = 2240;
+                } else if ((experience >= 2550) && (experience < 2880)) {
+                    level = 16
+                    neededExp = 2880;
+                    prevExp = 2550;
+                } else if ((experience >= 2880) && (experience < 3230)) {
+                    level = 17
+                    neededExp = 3230;
+                    prevExp = 2880;
+                } else if ((experience >= 3230) && (experience < 3600)) {
+                    level = 18
+                    neededExp = 3600;
+                    prevExp = 3230;
+                } else if ((experience >= 3600) && (experience < 4000)) {
+                    level = 19
+                    neededExp = 4000;
+                    prevExp = 3600;
+                } else if (experience >= 4000) {
+                    level = 20
+                    neededExp = experience;
+                    prevExp = 0
                 }
 
-                if (stamina < 60) {
-                    stamina += 0.07;
+                if ((gold >= 100) && (shown == false)) {
+                    tip.show();
                 }
-
-                if ((player.health < player.maxHealth) && (!player.health <= 0)) {
-                    player.health += 0.05;
-                }
-
-                if (player.health <= 0) {
-                    //mode = "dead";
-                }
-
-                // LEVELING SYSTEM W/ EXPERIENCE
-
-                if ((experience > 30) && (experience < 90)) {
-                    level = 2;
-                } else if ((experience >= 90) && (experience < 200)) {
-                    level = 3;
-                } else if ((experience >= 200) && (experience < 400)) {
-                    level = 4;
-                }
-
 
                 drawLine.show();
                 drawLine.update();
@@ -190,23 +423,6 @@
 
                 hitbox.show();
                 hitbox.update();
-                
-                if (keyIsDown(87)) {
-                    player.up();
-                    pos = "up";
-                }
-                if (keyIsDown(83)) {
-                    player.down();
-                    pos = "down";
-                }
-                if (keyIsDown(65)) {
-                    player.left();
-                    pos = "left";
-                }
-                if (keyIsDown(68)) {
-                    player.right();
-                    pos = "right";
-                }
 
                 /*if (keyIsDown(77)) {
                     weapon.show();
@@ -217,56 +433,241 @@
                     weapon.fade();
                 }*/
 
-                for (var sn = 0; sn < snakeAmount.length; sn++) {
-                    snakeAmount[sn].display();
-                    snakeAmount[sn].move();
+                if ((level >= 1) && (level < 5)) {
+                    for (var sn = 0; sn < snakeAmount.length; sn++) {
+                        snakeAmount[sn].display();
+                        snakeAmount[sn].move();
 
-                    snakeAmount[sn].displayHealthBars();
-                    snakeAmount[sn].updateHealthBars();
+                        snakeAmount[sn].displayHealthBars();
+                        snakeAmount[sn].updateHealthBars();
+                    }
+                }   
 
-                    //hitboxes[sn].display();
-                    //hitboxes[sn].update();
-                }
-                
-                for (var j = bullets.length - 1; j >= 0; j--) {
-                    bullets[j].display();
-                    bullets[j].move();
+                if ((level >= 5) && (level < 10)) {
+                    for (var sl = 0; sl < slimeAmount.length; sl++) {
+                        slimeAmount[sl].display();
+                        slimeAmount[sl].move();
 
-                    //if (bullets[j].yPos < 0) {
-                        //bullets.splice(j, 1);
-                    //}
-
-                    for (var i = snakeAmount.length - 1; i >= 0; i--) {
-
-                        var hit = collideRectRect(bullets[j].getxPos(), bullets[j].getyPos(), bullets[j].getWidth(), bullets[j].getHeight(), snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight());
-
-                        if (hit == true) {
-                            snakeAmount[i].addCount(1);
-                            //console.log(hit + " " + snakeAmount[i].getCount())
-
-                            if (snakeAmount[i].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
-                                counter++;
-                                document.getElementById("snakesValue").innerText = counter;
-
-                                bullets.splice(j, 1);
-                                snakeAmount.splice(i, 1);
-                                
-                                experience += 5;
-                                gold += 10;
-
-                                break;
-                            }
-                        }
-
+                        slimeAmount[sl].displayHealthBars();
+                        slimeAmount[sl].updateHealthBars();
                     }
                 }
 
+                if ((level >= 10) && (level < 15)) {
+                    for (var bl = 0; bl < blobAmount.length; bl++) {
+                        blobAmount[bl].display();
+                        blobAmount[bl].move();
+
+                        blobAmount[bl].displayHealthBars();
+                        blobAmount[bl].updateHealthBars();
+                    }
+                }
+
+                if ((level >= 15) && (level < 20)) {
+                    for (var gl = 0; gl < golemAmount.length; gl++) {
+                        golemAmount[gl].display();
+                        golemAmount[gl].move();
+
+                        golemAmount[gl].displayHealthBars();
+                        golemAmount[gl].updateHealthBars();
+                    }
+                }
+
+                if (level == 20) {
+                    for (var dr = 0; dr < dragonAmount.length; dr++) {
+                        dragonAmount[dr].display();
+                        dragonAmount[dr].move();
+
+                        dragonAmount[dr].displayHealthBars();
+                        dragonAmount[dr].updateHealthBars();
+                    }
+                }
+
+                if ((level >= 1) && (level < 5)) {
+                
+                    for (var j = bullets.length - 1; j >= 0; j--) {
+                        bullets[j].display();
+                        bullets[j].move();
+
+                        //if (bullets[j].yPos < 0) {
+                            //bullets.splice(j, 1);
+                        //}
+
+                        for (var i = snakeAmount.length - 1; i >= 0; i--) {
+
+                            var hit = collideRectRect(bullets[j].getxPos(), bullets[j].getyPos(), bullets[j].getWidth(), bullets[j].getHeight(), snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight());
+
+                            if (hit == true) {
+                                snakeAmount[i].addCount(1);
+                                //console.log(hit + " " + snakeAmount[i].getCount())
+
+                                if (snakeAmount[i].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
+                                    counter++;
+                                    document.getElementById("snakesValue").innerText = counter;
+
+                                    bullets.splice(j, 1);
+                                    snakeAmount.splice(i, 1);
+                                    
+                                    experience += 5;
+                                    gold += 10;
+
+                                    break;
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                if ((level >= 5) && (level < 10)) {
+
+                    for (var h = bullets.length - 1; h >= 0; h--) {
+                        bullets[h].display();
+                        bullets[h].move();
+
+                        for (var sli = slimeAmount.length - 1; sli >= 0; sli--) {
+
+                            var slimeHit = collideRectRect(bullets[h].getxPos(), bullets[h].getyPos(), bullets[h].getWidth(), bullets[h].getHeight(), slimeAmount[sli].getxPos(), slimeAmount[sli].getyPos(), slimeAmount[sli].getWidth(), slimeAmount[sli].getHeight());
+                        
+                            if (slimeHit == true) {
+                                slimeAmount[sli].addCount(1);
+                                //console.log(hit + " " + snakeAmount[i].getCount())
+
+                                if (slimeAmount[sli].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
+                                    counter++;
+                                    document.getElementById("snakesValue").innerText = counter;
+
+                                    bullets.splice(h, 1);
+                                    slimeAmount.splice(sli, 1);
+                                    
+                                    experience += 10;
+                                    gold += 20;
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ((level >= 10) && (level < 15)) {
+
+                    for (var q = bullets.length - 1; q >= 0; q--) {
+                        bullets[q].display();
+                        bullets[q].move();
+
+                        for (var blo = blobAmount.length - 1; blo >= 0; blo--) {
+
+                            var blobHit = collideRectRect(bullets[q].getxPos(), bullets[q].getyPos(), bullets[q].getWidth(), bullets[q].getHeight(), blobAmount[blo].getxPos(), blobAmount[blo].getyPos(), blobAmount[blo].getWidth(), blobAmount[blo].getHeight());
+                        
+                            if (blobHit == true) {
+                                blobAmount[blo].addCount(1);
+                                //console.log(hit + " " + snakeAmount[i].getCount())
+
+                                if (blobAmount[blo].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
+                                    counter++;
+                                    document.getElementById("snakesValue").innerText = counter;
+
+                                    bullets.splice(q, 1);
+                                    blobAmount.splice(blo, 1);
+                                    
+                                    experience += 20;
+                                    gold += 30;
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if ((level >= 15) && (level < 20)) {
+
+                    for (var s = bullets.length - 1; s >= 0; s--) {
+                        bullets[s].display();
+                        bullets[s].move();
+
+                        for (var gol = golemAmount.length - 1; gol >= 0; gol--) {
+
+                            var golemHit = collideRectRect(bullets[s].getxPos(), bullets[s].getyPos(), bullets[s].getWidth(), bullets[s].getHeight(), golemAmount[gol].getxPos(), golemAmount[gol].getyPos(), golemAmount[gol].getWidth(), golemAmount[gol].getHeight());
+                        
+                            if (golemHit == true) {
+                                golemAmount[gol].addCount(1);
+                                //console.log(hit + " " + snakeAmount[i].getCount())
+
+                                if (golemAmount[gol].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
+                                    counter++;
+                                    document.getElementById("snakesValue").innerText = counter;
+
+                                    bullets.splice(s, 1);
+                                    golemAmount.splice(gol, 1);
+                                    
+                                    experience += 30;
+                                    gold += 40;
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (level == 20) {
+
+                    for (var u = bullets.length - 1; u >= 0; u--) {
+                        bullets[u].display();
+                        bullets[u].move();
+
+                        for (var dra = dragonAmount.length - 1; dra >= 0; dra--) {
+
+                            var dragonHit = collideRectRect(bullets[u].getxPos(), bullets[u].getyPos(), bullets[u].getWidth(), bullets[u].getHeight(), dragonAmount[dra].getxPos(), dragonAmount[dra].getyPos(), dragonAmount[dra].getWidth(), dragonAmount[dra].getHeight());
+                        
+                            if (dragonHit == true) {
+                                dragonAmount[dra].addCount(1);
+                                //console.log(hit + " " + snakeAmount[i].getCount())
+
+                                if (dragonAmount[dra].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
+                                    counter++;
+                                    document.getElementById("snakesValue").innerText = counter;
+
+                                    bullets.splice(u, 1);
+                                    dragonAmount.splice(dra, 1);
+                                    
+                                    experience += 100;
+                                    gold += 1000;
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
             }
 
-            if (mode == 2) {
+
+
+            if (mode == 2) {                               // IN NEXUS
                 clear();
 
                 document.body.style.backgroundColor = "lightblue"
+
+                document.getElementById("goldValue").innerText = gold;
+
+                document.getElementById("total").style.visibility = "visible";
+
+                shown = true;
 
                 shop.instShow();
 
@@ -285,36 +686,14 @@
                 player.displayLevel();
                 player.updateLevel();
 
-                if (keyIsDown(87)) {
-                    player.up();
-                    pos = "up";
-                }
-                if (keyIsDown(83)) {
-                    player.down();
-                    pos = "down";
-                }
-                if (keyIsDown(65)) {
-                    player.left();
-                    pos = "left";
-                }
-                if (keyIsDown(68)) {
-                    player.right();
-                    pos = "right";
-                }
+                bullets.length = 0;
+                snakeAmount.length = 0;
 
-                if (stamina >= 60) {
-                    stamina = 60;
-                }
-
-                if (stamina < 60) {
-                    stamina += 0.07;
-                }
-
-                if ((player.health < player.maxHealth) && (!player.health <= 0)) {
-                    player.health += 0.05;
-                }
+                cursor()
 
             }
+            
+        }
 
             /* wip death screen
             if (mode == "dead") {
@@ -324,7 +703,7 @@
                 death.show();
             }
             */
-    }
+    
 
         function task(s) { // settimeout to add a delay in between for loop iterations
             setTimeout(function() {
@@ -332,13 +711,51 @@
                 let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
                 snakeAmount.push(s);
 
-                console.log(snakeAmount);
-
             }, 200 * s) // timer is in ms
         }
 
+        function taskSlime(s2) { // settimeout to add a delay in between for loop iterations
+            setTimeout(function() {
+
+                let s2 = new enemy2(random(-w, w), random(-w, w), random(0.5, 1));
+                slimeAmount.push(s2);
+
+            }, 200 * s2) // timer is in ms
+        }
+
+        function taskBlob(s3) { // settimeout to add a delay in between for loop iterations
+            setTimeout(function() {
+
+                let s3 = new enemy3(random(-w, w), random(-w, w), random(0.5, 1));
+                blobAmount.push(s3);
+
+            }, 200 * s3) // timer is in ms
+        }
+
+        function taskGolem(s4) { // settimeout to add a delay in between for loop iterations
+            setTimeout(function() {
+
+                let s4 = new enemy4(random(-w, w), random(-w, w), random(0.5, 1));
+                golemAmount.push(s4);
+
+                console.log(golemAmount);
+
+            }, 200 * s4) // timer is in ms
+        }
+
+        function taskDragon(s5) { // settimeout to add a delay in between for loop iterations
+            setTimeout(function() {
+
+                let s5 = new enemy5(random(-w, w), random(-w, w), random(0.5, 1));
+                dragonAmount.push(s5);
+
+                console.log(dragonAmount);
+
+            }, 200 * s5) // timer is in ms
+        }
+
         function mousePressed() {
-            if (stamina > 5) { // implementing stamina system
+            if ((stamina > 5) && (mode != 2)) { // implementing stamina system
 
                 let mouseVector = getMouseVector();
                 let b = new shoot(mouseVector.x, mouseVector.y);
@@ -364,9 +781,13 @@
                 loop();
                 gameState = true;
             } else if (key == 'c') {
-                mode = 1;
+                start();
             } else if ((key == 'r') && (mode == 1)) {
                 mode = 2;
+
+                document.getElementById("shopContainer").style.visibility = "hidden"
+                document.getElementById("shopText").textContent = "Open Shop"
+                shopStatus = false;
             }
         }
 
@@ -386,22 +807,6 @@
                 }
             }
         }
-
-        // SCRAPPED WEAPON SYSTEM
-
-        //function keyReleased() {
-            //if (keyCode == 67) {
-                //weapon.fade();
-            //}
-
-            //return false;
-        //}
-
-        //function keyTyped() {
-            //if (key === "c") {
-                //weapon.show();
-            //}
-        //}
 
     </script>
 </body>

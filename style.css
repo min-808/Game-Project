@@ -5,6 +5,7 @@ body {
     overflow: hidden;
 
     background-color: #c6ffc6;
+    font-family: 'Nunito Sans', sans-serif;
 }
 
 #snakesTitle, #goldTitle {
@@ -23,4 +24,183 @@ body {
 #frames {
     float: right;
     font-size: 27px;
+}
+
+#startButton {
+    position: absolute;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #a7ffc4;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 100px;
+    text-align: center;
+
+    border-style: solid;
+    border-width: 2px;
+    border-color: #000000;
+    border-radius: 20px;
+}
+
+#startText {
+    position: relative;
+    vertical-align: middle;
+
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#shopButton {
+    position: absolute;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #70a2ff;
+    top: 500px;
+    left: 70%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    text-align: center;
+
+    border-style: solid;
+    border-width: 2px;
+    border-color: #000000;
+    border-radius: 20px;
+}
+
+#shopText {
+    position: relative;
+    vertical-align: middle;
+
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#returnButton {
+    position: absolute;
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #70a2ff;
+    top: 500px;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    text-align: center;
+
+    border-style: solid;
+    border-width: 2px;
+    border-color: #000000;
+    border-radius: 20px;
+}
+
+#returnText {
+    position: relative;
+    vertical-align: middle;
+
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#shopContainer {
+    display: inline-block;
+    text-align: center;
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(236, 242, 255);
+
+    border-style: solid;
+    border-width: 8px;
+    border-color: #000000;
+    border-radius: 10px;
+
+    overflow: scroll;
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+
+#shopTitle {
+    font-size: 20px;
+}
+
+#lineOne {
+    display: block;
+    margin: 5px;
+}
+
+#lineTwo {
+    display: block;
+}
+
+#itemOne, #itemTwo, #itemThree {
+    position: relative;
+    text-align: left;
+    width: 450px;
+    height: auto;
+    background-color: #b7c7ff;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 20px;
+    margin: 12px;
+    word-wrap: break-word;
+}
+
+#itemOneContent, #itemTwoContent, #itemThreeContent {
+    margin-left: 20px;
+}
+
+#staminaBoost, #healthBoost, #damageBoost {
+    height: 140px;
+    width: auto;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+#itemOneName, #itemTwoName, #itemThreeName {
+    position: absolute;
+    margin-left: 10px;
+    font-size: 17.5px;
+}
+
+#itemOneDesc, #itemTwoDesc, #itemThreeDesc {
+    position: absolute;
+    margin-left: 10px;
+    margin-right: 10px;
+    top: 50px;
+    font-weight: lighter;
+    font-size: 15px;
+}
+
+#itemOnePrice, #itemTwoPrice, #itemThreePrice {
+    position: absolute;
+    margin-left: 190px;
+    font-weight: bold;
+    top: 21px;
+}
+
+#itemOneAdd, #itemTwoAdd, #itemThreeAdd {
+    position: relative;
+    top: -5px;
+    font-size: 20px;
+}
+
+#itemOneLevel, #itemTwoLevel, #itemThreeLevel {
+    position: relative;
+    left: 80px;
 }
