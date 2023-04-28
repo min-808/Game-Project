@@ -169,7 +169,7 @@ function shop() {
         text("Welcome to the Nexus!", this.instxPos, this.instyPos - 40);
         text("Here you can regenerate your HP and Stamina without being attacked", this.instxPos, this.instyPos);
         text("You can click the 'shop' button to open/close the shop", this.instxPos, this.instyPos + 80);
-        text("You can click the 'return' button to return to the level", this.instxPos, this.instyPos + 120);
+        text("You can click the 'back to game' button to return to the level", this.instxPos, this.instyPos + 120);
     }
 }
 
