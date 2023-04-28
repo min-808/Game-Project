@@ -220,7 +220,7 @@ function hitbox() {
                 var hitPlayer2 = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, slimeAmount[p].getxPos(), slimeAmount[p].getyPos(), slimeAmount[p].getWidth(), slimeAmount[p].getHeight())
             
                 if (hitPlayer2) {
-                    player.takingDamage(50); // invokes the take damage function and makes player lose hp
+                    player.takingDamage(60); // invokes the take damage function and makes player lose hp
                 }
 
             }
@@ -232,7 +232,7 @@ function hitbox() {
                 var hitPlayer3 = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, blobAmount[w].getxPos(), blobAmount[w].getyPos(), blobAmount[w].getWidth(), blobAmount[w].getHeight())
             
                 if (hitPlayer3) {
-                    player.takingDamage(50); // invokes the take damage function and makes player lose hp
+                    player.takingDamage(65); // invokes the take damage function and makes player lose hp
                 }
 
             }
@@ -244,7 +244,7 @@ function hitbox() {
                 var hitPlayer4 = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, golemAmount[y].getxPos(), golemAmount[y].getyPos(), golemAmount[y].getWidth(), golemAmount[y].getHeight())
             
                 if (hitPlayer4) {
-                    player.takingDamage(50); // invokes the take damage function and makes player lose hp
+                    player.takingDamage(75); // invokes the take damage function and makes player lose hp
                 }
 
             }
@@ -256,7 +256,7 @@ function hitbox() {
                 var hitPlayer5 = collideRectRect((this.xPos - this.width / 2) + 40, (this.yPos - this.height / 2) + 40, this.width, this.height, dragonAmount[z].getxPos(), dragonAmount[z].getyPos(), dragonAmount[z].getWidth(), dragonAmount[z].getHeight())
             
                 if (hitPlayer5) {
-                    player.takingDamage(50); // invokes the take damage function and makes player lose hp
+                    player.takingDamage(90); // invokes the take damage function and makes player lose hp
                 }
 
             }
@@ -803,7 +803,7 @@ class enemy5 {
 
     updateHealthBars() {
         this.hxPos = this.xPos - this.hWidth / 2;
-        this.hyPos = this.yPos + 40;
+        this.hyPos = this.yPos + 50;
     }
 
     move() {
@@ -948,6 +948,46 @@ function staminaBoost() { // change stamina parameters in html cause its now gre
 
 }
 
+function staminaRegen() { // WORK ON THIS IN CLASS
+    if ((oneLevel <= 5) && (gold - oneRequired >= 0)) {
+        oneLevel++;
+        gold -= oneRequired;
+
+        if (oneLevel == 2) {
+            document.getElementById("staminaAdd").textContent = 10;
+            maxStamina += 5;
+            stamina = maxStamina;
+
+            oneRequired = 200;
+        } else if (oneLevel == 3) {
+            document.getElementById("staminaAdd").textContent = 20;
+            maxStamina += 10
+            stamina = maxStamina;
+
+            oneRequired = 500
+        } else if (oneLevel == 4) {
+            document.getElementById("staminaAdd").textContent = 50;
+            maxStamina += 20;
+            stamina = maxStamina;
+
+            oneRequired = 1000
+        }
+
+        if (oneLevel == 5) {
+            oneLevel = "MAX"
+            document.getElementById("itemOneDesc").textContent = "SOLD OUT";
+            document.getElementById("itemOneDesc").style.fontWeight = "bold";
+    
+            maxStamina += 50;
+            stamina = maxStamina;
+    
+    
+            document.getElementById("itemOneAdd").disabled = true;
+        }
+    }
+
+}
+
 function healthBoost() {
     if ((twoLevel <= 5) && (gold - twoRequired >= 0)) {
         twoLevel++;
@@ -995,6 +1035,8 @@ function damageBoost() {
             threeLevel = "MAX"
             document.getElementById("itemThreeDesc").textContent = "SOLD OUT";
             document.getElementById("itemThreeDesc").style.fontWeight = "bold";
+
+            dmgPerHit *= 2;
             
             document.getElementById("itemThreeAdd").disabled = true;
         }

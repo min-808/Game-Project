@@ -45,6 +45,8 @@
 
         <hr />
 
+            <span id="lineThree">↓ Scroll down for more! ↓</span>
+
         <div id="itemOne">
             <div id="itemOneContent">
                 <img src="boost.png" id="staminaBoost">
@@ -53,6 +55,17 @@
                 <span id="itemOnePrice"><span id="oneGold">0</span> Gold</span>
                 <button id="itemOneAdd" onclick="staminaBoost()">Buy</button>
                 <span id="itemOneLevel">Current Level: <span id="oneLevel" style="font-weight: bold">0</span></span>
+            </div>
+        </div>
+
+        <div id="itemFour">
+            <div id="itemFourContent">
+                <img src="boost.png" id="staminaRegen">
+                <span id="itemFourName">Stamina Regen</span>
+                <span id="itemFourDesc">Permanently increases your stamina regen by <span id="staminaAdd" style="font-weight: bold">2x</span></span>
+                <span id="itemFourPrice"><span id="FourGold">0</span> Gold</span>
+                <button id="itemFourAdd" onclick="staminaRegen()">Buy</button>
+                <span id="itemFourLevel">Current Level: <span id="FourLevel" style="font-weight: bold">0</span></span>
             </div>
         </div>
 
@@ -71,7 +84,7 @@
             <div id="itemThreeContent">
                 <img src="boost.png" id="damageBoost">
                 <span id="itemThreeName">Damage Boost</span>
-                <span id="itemThreeDesc">Permanently increases your damage by 2x</span>
+                <span id="itemThreeDesc">Permanently increases your damage by <span id="damageAdd" style="font-weight: bold">2x</span></span>
                 <span id="itemThreePrice"><span id="threeGold">0</span> Gold</span>
                 <button id="itemThreeAdd" onclick="damageBoost()">Buy</button>
                 <span id="itemThreeLevel">Current Level: <span id="threeLevel" style="font-weight: bold">0</span></span>
@@ -94,10 +107,10 @@
         var maxStamina = 60;
 
         var level = 1;
-        var experience = 3990
+        var experience = 0
         var neededExp = 30;
         var prevExp = 0;
-        var gold = 0;
+        var gold = 1000000
 
         var oneLevel = 1;
         var twoLevel = 1;
@@ -130,6 +143,7 @@
         var shop = new shop();
 
         var dmgPerHit = 5;
+        var piercing = false;
 
         var drawCursor = new drawCursor();
         var drawLine = new drawLine();
@@ -506,7 +520,7 @@
                                     counter++;
                                     document.getElementById("snakesValue").innerText = counter;
 
-                                    bullets.splice(j, 1);
+                                    bullets.splice(j, 1);                          
                                     snakeAmount.splice(i, 1);
                                     
                                     experience += 5;
