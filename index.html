@@ -31,7 +31,7 @@
         </button>
 
         <button id="returnButton" onclick="returnToGame()">
-            <span id="returnText">Return To Game</span>
+            <span id="returnText">Back To Game</span>
         </div>
 
     </div>
@@ -94,7 +94,7 @@
         var maxStamina = 60;
 
         var level = 1;
-        var experience = 3980
+        var experience = 0
         var neededExp = 30;
         var prevExp = 0;
         var gold = 0;
@@ -128,6 +128,8 @@
         var hitbox = new hitbox();
         var instructions = new instructions();
         var shop = new shop();
+
+        var dmgPerHit = 5;
 
         var drawCursor = new drawCursor();
         var drawLine = new drawLine();
@@ -498,10 +500,9 @@
                             var hit = collideRectRect(bullets[j].getxPos(), bullets[j].getyPos(), bullets[j].getWidth(), bullets[j].getHeight(), snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight());
 
                             if (hit == true) {
-                                snakeAmount[i].addCount(1);
-                                //console.log(hit + " " + snakeAmount[i].getCount())
+                                snakeAmount[i].curHealth -= dmgPerHit;
 
-                                if (snakeAmount[i].getCount() == 11) { // current single hits do between 6 and 8 i think. depends on the speed of the bullet and framerate
+                                if (snakeAmount[i].curHealth <= 0) { // no more addcount, getcount, new system is easier to tweak
                                     counter++;
                                     document.getElementById("snakesValue").innerText = counter;
 
@@ -708,7 +709,7 @@
         function task(s) { // settimeout to add a delay in between for loop iterations
             setTimeout(function() {
 
-                let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1));
+                let s = new enemy(random(-w, w), random(-w, w), random(0.5, 1), 100, 100); // CURRENT HEALTH, MAX HEALTH
                 snakeAmount.push(s);
 
             }, 200 * s) // timer is in ms
