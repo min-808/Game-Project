@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.js"></script>
     <script src="game.js"></script>
     <script defer src="https://unpkg.com/p5.collide2d"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/addons/p5.sound.js"></script>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@3000&display=swap" rel="stylesheet">
     <title>Game Project</title>
@@ -60,12 +61,12 @@
 
         <div id="itemFour">
             <div id="itemFourContent">
-                <img src="boost.png" id="staminaRegen">
+                <img src="regen.png" id="staminaRegen">
                 <span id="itemFourName">Stamina Regen</span>
-                <span id="itemFourDesc">Permanently increases your stamina regen by <span id="staminaAdd" style="font-weight: bold">2x</span></span>
-                <span id="itemFourPrice"><span id="FourGold">0</span> Gold</span>
+                <span id="itemFourDesc">Permanently increases your stamina regen by <span id="staminaRegenAdd" style="font-weight: bold">2x</span></span>
+                <span id="itemFourPrice"><span id="fourGold">0</span> Gold</span>
                 <button id="itemFourAdd" onclick="staminaRegen()">Buy</button>
-                <span id="itemFourLevel">Current Level: <span id="FourLevel" style="font-weight: bold">0</span></span>
+                <span id="itemFourLevel">Current Level: <span id="fourLevel" style="font-weight: bold">0</span></span>
             </div>
         </div>
 
@@ -77,6 +78,17 @@
                 <span id="itemTwoPrice"><span id="twoGold">0</span> Gold</span>
                 <button id="itemTwoAdd" onclick="healthBoost()">Buy</button>
                 <span id="itemTwoLevel">Current Level: <span id="twoLevel" style="font-weight: bold">0</span></span>
+            </div>
+        </div>
+
+        <div id="itemFive">
+            <div id="itemFiveContent">
+                <img src="regen.png" id="healthBoost">
+                <span id="itemFiveName">Health Regen</span>
+                <span id="itemFiveDesc">Permanently increases your health regen by <span id="healthRegenAdd" style="font-weight: bold">2x</span></span>
+                <span id="itemFivePrice"><span id="fiveGold">0</span> Gold</span>
+                <button id="itemFiveAdd" onclick="healthRegen()">Buy</button>
+                <span id="itemFiveLevel">Current Level: <span id="fiveLevel" style="font-weight: bold">0</span></span>
             </div>
         </div>
 
@@ -105,20 +117,26 @@
 
         var stamina = 60;
         var maxStamina = 60;
+        var hasStaminaRegen = false;
+        var hasHealthRegen = false;
 
         var level = 1;
         var experience = 0
         var neededExp = 30;
         var prevExp = 0;
-        var gold = 1000000
+        var gold = 0
 
         var oneLevel = 1;
         var twoLevel = 1;
         var threeLevel = 1;
+        var fourLevel = 1;
+        var fiveLevel = 1;
 
-        var oneRequired = 100;
-        var twoRequired = 200;
-        var threeRequired = 1200;
+        var oneRequired = 100; // stamina boost
+        var twoRequired = 200; // health boost
+        var threeRequired = 500; // damage boost
+        var fourRequired = 600; // stamina regen
+        var fiveRequired = 700; // health regen
 
         var hit = false;
 
@@ -141,6 +159,8 @@
         var hitbox = new hitbox();
         var instructions = new instructions();
         var shop = new shop();
+        var showCompletion = new showCompletion();
+        var showDeath = new showDeath();
 
         var dmgPerHit = 5;
         var piercing = false;
@@ -151,6 +171,12 @@
         var tip = new tip();
 
         //var weapon = new weapon();
+
+        function preload() {
+            soundFormats('mp3')
+
+            soundEffect1 = loadSound("hitSound.mp3");
+        }
 
         function setup() {
             frameRate(60);
@@ -163,6 +189,8 @@
             blob = loadImage("blob.png");
             golem = loadImage("golem.png");
             dragon = loadImage("dragon.png");
+
+            soundEffect1.setVolume(0.5); 
         }
 
         function draw() {
@@ -174,28 +202,37 @@
             document.getElementById("oneLevel").textContent = oneLevel;
             document.getElementById("twoLevel").textContent = twoLevel;
             document.getElementById("threeLevel").textContent = threeLevel;
+            document.getElementById("fourLevel").textContent = fourLevel;
+            document.getElementById("fiveLevel").textContent = fiveLevel;
 
             document.getElementById("oneGold").innerHTML = oneRequired;
             document.getElementById("twoGold").innerHTML = twoRequired;
             document.getElementById("threeGold").innerHTML = threeRequired;
+            document.getElementById("fourGold").innerHTML = fourRequired;
+            document.getElementById("fiveGold").innerHTML = fiveRequired;
 
             document.getElementById("framesValue").innerText = frameRate().toFixed(0);
 
             if (stamina >= maxStamina) {
                     stamina = maxStamina;
             }
-            if (stamina < maxStamina) {
+            if ((stamina < maxStamina) && (hasStaminaRegen == false)) {
                     stamina += 0.07;
+            } else if ((stamina < maxStamina) && (hasStaminaRegen == true)) {
+                stamina += 0.14;
             }
 
-            if ((player.health < player.maxHealth) && (!player.health <= 0)) {
-                    player.health += 0.05;
+            if ((player.health < player.maxHealth) && (!player.health <= 0) && (hasHealthRegen == false)) {
+                player.health += 0.05;
+            } else if ((player.health < player.maxHealth) && (!player.health <= 0) && (hasHealthRegen == true)) {
+                player.health += .15;
             }
+
             if (player.health >= player.maxHealth) {
                     player.health = player.maxHealth;
             }
             if (player.health <= 0) {
-                //mode = "dead";
+                mode = "dead";
             }
 
             if (keyIsDown(87)) {
@@ -515,6 +552,7 @@
 
                             if (hit == true) {
                                 snakeAmount[i].curHealth -= dmgPerHit;
+                                soundEffect1.play();
 
                                 if (snakeAmount[i].curHealth <= 0) { // no more addcount, getcount, new system is easier to tweak
                                     counter++;
@@ -523,8 +561,8 @@
                                     bullets.splice(j, 1);                          
                                     snakeAmount.splice(i, 1);
                                     
-                                    experience += 5;
-                                    gold += 10;
+                                    experience += 10;
+                                    gold += 20;
 
                                     break;
                                 }
@@ -546,6 +584,7 @@
                         
                             if (slimeHit == true) {
                                 slimeAmount[sli].curHealth -= dmgPerHit;
+                                soundEffect1.play();
 
                                 if (slimeAmount[sli].curHealth <= 0) {
                                     counter++;
@@ -554,8 +593,8 @@
                                     bullets.splice(h, 1);
                                     slimeAmount.splice(sli, 1);
                                     
-                                    experience += 10;
-                                    gold += 20;
+                                    experience += 20;
+                                    gold += 40;
 
                                     break;
                                 }
@@ -576,6 +615,7 @@
                         
                             if (blobHit == true) {
                                 blobAmount[blo].curHealth -= dmgPerHit;
+                                soundEffect1.play();
 
                                 if (blobAmount[blo].curHealth <= 0) {
                                     counter++;
@@ -584,8 +624,8 @@
                                     bullets.splice(q, 1);
                                     blobAmount.splice(blo, 1);
                                     
-                                    experience += 20;
-                                    gold += 30;
+                                    experience += 40;
+                                    gold += 50;
 
                                     break;
                                 }
@@ -606,6 +646,7 @@
                         
                             if (golemHit == true) {
                                 golemAmount[gol].curHealth -= dmgPerHit;
+                                soundEffect1.play();
 
                                 if (golemAmount[gol].curHealth <= 0) {
                                     counter++;
@@ -614,8 +655,8 @@
                                     bullets.splice(s, 1);
                                     golemAmount.splice(gol, 1);
                                     
-                                    experience += 30;
-                                    gold += 40;
+                                    experience += 60;
+                                    gold += 70;
 
                                     break;
                                 }
@@ -636,6 +677,7 @@
                         
                             if (dragonHit == true) {
                                 dragonAmount[dra].curHealth -= dmgPerHit;
+                                soundEffect1.play();
 
                                 if (dragonAmount[dra].curHealth <= 0) {
                                     counter++;
@@ -646,6 +688,8 @@
                                     
                                     experience += 100;
                                     gold += 1000;
+
+                                    mode = "done";
 
                                     break;
                                 }
@@ -698,17 +742,23 @@
 
                 cursor()
             }
+
+            if (mode == "done") {
+                document.getElementById("snakesTitle").style.visibility = "hidden"
+                document.getElementById("goldTitle").style.visibility = "hidden"
+                document.getElementById("frames").style.visibility = "hidden"
+
+                showCompletion.show();
+
+                noLoop();
+            }
+
+            if (mode == "dead") {
+            showDeath.show();
+            noLoop();
+        }
             
         }
-
-            /* wip death screen
-            if (mode == "dead") {
-                document.getElementById("snakesTitle").style.visibility = "hidden";
-                document.getElementById("frames").style.visibility = "hidden";
-
-                death.show();
-            }
-            */
     
 
         function task(s) { // settimeout to add a delay in between for loop iterations
@@ -723,7 +773,7 @@
         function taskSlime(s2) { // settimeout to add a delay in between for loop iterations
             setTimeout(function() {
 
-                let s2 = new enemy2(random(-w, w), random(-w, w), random(0.5, 1), 200, 200);
+                let s2 = new enemy2(random(-w, w), random(-w, w), random(0.5, 1), 150, 150);
                 slimeAmount.push(s2);
 
             }, 200 * s2) // timer is in ms
@@ -732,7 +782,7 @@
         function taskBlob(s3) { // settimeout to add a delay in between for loop iterations
             setTimeout(function() {
 
-                let s3 = new enemy3(random(-w, w), random(-w, w), random(0.5, 1), 350, 350);
+                let s3 = new enemy3(random(-w, w), random(-w, w), random(0.5, 1), 200, 200);
                 blobAmount.push(s3);
 
             }, 200 * s3) // timer is in ms
@@ -741,7 +791,7 @@
         function taskGolem(s4) { // settimeout to add a delay in between for loop iterations
             setTimeout(function() {
 
-                let s4 = new enemy4(random(-w, w), random(-w, w), random(0.5, 1), 400, 400);
+                let s4 = new enemy4(random(-w, w), random(-w, w), random(0.5, 1), 250, 250);
                 golemAmount.push(s4);
 
                 console.log(golemAmount);
@@ -752,7 +802,7 @@
         function taskDragon(s5) { // settimeout to add a delay in between for loop iterations
             setTimeout(function() {
 
-                let s5 = new enemy5(random(-w, w), random(-w, w), random(0.5, 1), 600, 600);
+                let s5 = new enemy5(random(-w, w), random(-w, w), random(0.5, 1), 1500, 1500);
                 dragonAmount.push(s5);
 
                 console.log(dragonAmount);
@@ -786,8 +836,6 @@
             } else if ((key == "p") && gameState == false) {
                 loop();
                 gameState = true;
-            } else if (key == 'c') {
-                start();
             } else if ((key == 'r') && (mode == 1)) {
                 mode = 2;
 

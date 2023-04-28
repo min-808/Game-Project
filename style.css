@@ -146,7 +146,7 @@ body {
     display: block;
 }
 
-#itemOne, #itemTwo, #itemThree {
+#itemOne, #itemTwo, #itemThree, #itemFour, #itemFive {
     position: relative;
     text-align: left;
     width: 450px;
@@ -161,24 +161,24 @@ body {
     word-wrap: break-word;
 }
 
-#itemOneContent, #itemTwoContent, #itemThreeContent {
+#itemOneContent, #itemTwoContent, #itemThreeContent, #itemFourContent, #itemFiveContent {
     margin-left: 20px;
 }
 
-#staminaBoost, #healthBoost, #damageBoost {
+#staminaBoost, #healthBoost, #damageBoost, #staminaRegen, #healthRegen {
     height: 140px;
     width: auto;
     border-radius: 10px;
     display: inline-block;
 }
 
-#itemOneName, #itemTwoName, #itemThreeName {
+#itemOneName, #itemTwoName, #itemThreeName, #itemFourName, #itemFiveName {
     position: absolute;
     margin-left: 10px;
     font-size: 17.5px;
 }
 
-#itemOneDesc, #itemTwoDesc, #itemThreeDesc {
+#itemOneDesc, #itemTwoDesc, #itemThreeDesc, #itemFourDesc, #itemFiveDesc {
     position: absolute;
     margin-left: 10px;
     margin-right: 10px;
@@ -187,20 +187,20 @@ body {
     font-size: 15px;
 }
 
-#itemOnePrice, #itemTwoPrice, #itemThreePrice {
+#itemOnePrice, #itemTwoPrice, #itemThreePrice, #itemFourPrice, #itemFivePrice {
     position: absolute;
     margin-left: 190px;
     font-weight: bold;
     top: 21px;
 }
 
-#itemOneAdd, #itemTwoAdd, #itemThreeAdd {
+#itemOneAdd, #itemTwoAdd, #itemThreeAdd, #itemFourAdd, #itemFiveAdd {
     position: relative;
     top: -5px;
     font-size: 20px;
 }
 
-#itemOneLevel, #itemTwoLevel, #itemThreeLevel {
+#itemOneLevel, #itemTwoLevel, #itemThreeLevel, #itemFourLevel, #itemFiveLevel {
     position: relative;
     left: 80px;
 }

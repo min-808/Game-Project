@@ -918,19 +918,19 @@ function staminaBoost() { // change stamina parameters in html cause its now gre
             maxStamina += 5;
             stamina = maxStamina;
 
-            oneRequired = 200;
+            oneRequired = 150;
         } else if (oneLevel == 3) {
             document.getElementById("staminaAdd").textContent = 20;
             maxStamina += 10
             stamina = maxStamina;
 
-            oneRequired = 500
+            oneRequired = 200
         } else if (oneLevel == 4) {
             document.getElementById("staminaAdd").textContent = 50;
             maxStamina += 20;
             stamina = maxStamina;
 
-            oneRequired = 1000
+            oneRequired = 250;
         }
 
         if (oneLevel == 5) {
@@ -948,41 +948,19 @@ function staminaBoost() { // change stamina parameters in html cause its now gre
 
 }
 
-function staminaRegen() { // WORK ON THIS IN CLASS
-    if ((oneLevel <= 5) && (gold - oneRequired >= 0)) {
-        oneLevel++;
-        gold -= oneRequired;
+function staminaRegen() {
+    if ((fourLevel <= 2) && (gold - fourRequired >= 0)) {
+        fourLevel++;
+        gold -= fourRequired;
 
-        if (oneLevel == 2) {
-            document.getElementById("staminaAdd").textContent = 10;
-            maxStamina += 5;
-            stamina = maxStamina;
+        if (fourLevel == 2) {
+            fourLevel = "MAX"
+            document.getElementById("itemFourDesc").textContent = "SOLD OUT";
+            document.getElementById("itemFourDesc").style.fontWeight = "bold";
 
-            oneRequired = 200;
-        } else if (oneLevel == 3) {
-            document.getElementById("staminaAdd").textContent = 20;
-            maxStamina += 10
-            stamina = maxStamina;
-
-            oneRequired = 500
-        } else if (oneLevel == 4) {
-            document.getElementById("staminaAdd").textContent = 50;
-            maxStamina += 20;
-            stamina = maxStamina;
-
-            oneRequired = 1000
-        }
-
-        if (oneLevel == 5) {
-            oneLevel = "MAX"
-            document.getElementById("itemOneDesc").textContent = "SOLD OUT";
-            document.getElementById("itemOneDesc").style.fontWeight = "bold";
-    
-            maxStamina += 50;
-            stamina = maxStamina;
-    
-    
-            document.getElementById("itemOneAdd").disabled = true;
+            hasStaminaRegen = true;
+            
+            document.getElementById("itemFourAdd").disabled = true;
         }
     }
 
@@ -998,19 +976,19 @@ function healthBoost() {
             player.maxHealth += 20;
             player.health = player.maxHealth;
     
-            twoRequired = 400;
+            twoRequired = 250;
         } else if (twoLevel == 3) {
             document.getElementById("healthAdd").textContent = 100;
             player.maxHealth += 50;
             player.health = player.maxHealth;
     
-            twoRequired = 800
+            twoRequired = 300
         } else if (twoLevel == 4) {
             document.getElementById("healthAdd").textContent = 200;
             player.maxHealth += 100;
             player.health = player.maxHealth;
     
-            twoRequired = 1500
+            twoRequired = 350;
         }
 
         if (twoLevel == 5) {
@@ -1026,19 +1004,82 @@ function healthBoost() {
     }
 }
 
+function healthRegen() {
+    if ((fiveLevel <= 2) && (gold - fourRequired >= 0)) {
+        fiveLevel++;
+        gold -= fiveRequired;
+
+        if (fiveLevel == 2) {
+            fiveLevel = "MAX"
+            document.getElementById("itemFiveDesc").textContent = "SOLD OUT";
+            document.getElementById("itemFiveDesc").style.fontWeight = "bold";
+
+            hasHealthRegen = true;
+            
+            document.getElementById("itemFiveAdd").disabled = true;
+        }
+    }
+
+}
+
 function damageBoost() {
     if ((threeLevel <= 2) && (gold - threeRequired >= 0)) {
         threeLevel++;
         gold -= threeRequired;
 
         if (threeLevel == 2) {
+            document.getElementById("damageAdd").textContent = "3x";
+            dmgPerHit += 2;
+    
+            threeRequired = 750;
+        }
+
+        if (threeLevel == 3) {
             threeLevel = "MAX"
             document.getElementById("itemThreeDesc").textContent = "SOLD OUT";
             document.getElementById("itemThreeDesc").style.fontWeight = "bold";
 
-            dmgPerHit *= 2;
+            dmgPerHit *= 3;
             
             document.getElementById("itemThreeAdd").disabled = true;
         }
+    }
+}
+
+function showCompletion() {
+    this.instWidth = 1000;
+    this.instHeight = 320;
+    this.instxPos = w/2;
+    this.instyPos = 100
+
+    this.show = function() {
+        fill(0,0,0,100);
+        rectMode(CENTER)
+        rect(this.instxPos, this.instyPos, this.instWidth, this.instHeight)
+        noStroke()
+        textSize(35)
+        fill(255,255,255)
+        textAlign(CENTER)
+        textStyle(BOLD)
+        text("Congratulations! You won!", this.instxPos, this.instyPos + 40)   
+    }
+}
+
+function showDeath() {
+    this.instWidth = 1000;
+    this.instHeight = 320;
+    this.instxPos = w/2;
+    this.instyPos = 100
+
+    this.show = function() {
+        fill(0,0,0,100);
+        rectMode(CENTER)
+        rect(this.instxPos, this.instyPos, this.instWidth, this.instHeight)
+        noStroke()
+        textSize(35)
+        fill(255,255,255)
+        textAlign(CENTER)
+        textStyle(BOLD)
+        text("You died! Refresh the website to try again", this.instxPos, this.instyPos + 40)   
     }
 }
