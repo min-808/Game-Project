@@ -460,7 +460,7 @@ class enemy {
         this.currentCount = 0;
 
         this.hxPos = this.xPos - this.hWidth / 2;
-        this.hyPos = this.yPos + 50;
+        this.hyPos = this.yPos + 40;
         this.hWidth = 80;
         this.hHeight = 10;
         
@@ -523,7 +523,7 @@ ENEMY NUMBER TWO
 
 class enemy2 {
 
-    constructor(alt_x, alt_y, speed_) {
+    constructor(alt_x, alt_y, speed_, curHealth, maxHealth) {
         this.width = 80;
         this.height = 80;
 
@@ -538,8 +538,8 @@ class enemy2 {
 
         this.currentCount = 0;
 
-        this.hxPos = this.xPos;
-        this.hyPos = this.yPos + 50;
+        this.hxPos = this.xPos - this.hWidth / 2;
+        this.hyPos = this.yPos + 40;
         this.hWidth = 80;
         this.hHeight = 10;
         
@@ -547,6 +547,8 @@ class enemy2 {
         this.hColorG = 238;
         this.hColorB = 144;
 
+        this.curHealth = curHealth;
+        this.maxHealth = maxHealth;
     }
 
     display() {
@@ -554,41 +556,14 @@ class enemy2 {
     }
 
     displayHealthBars() {
+        rectMode(CORNER)
         fill(this.hColorR, this.hColorG, this.hColorB)
-        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight);
+        rect(this.hxPos, this.hyPos, map(this.curHealth, 0, this.maxHealth, 0, this.hWidth), this.hHeight);
     }
 
     updateHealthBars() {
-        this.hxPos = this.xPos;
-        this.hyPos = this.yPos + 50;
-
-        if ((this.currentCount >= 1) && (this.currentCount <= 10)) {
-            this.hWidth -= 5;
-
-            this.hColorR += 10;
-            this.hColorG -= 5;
-            this.hColorB -= 5;
-
-            if (this.hWidth <= 30) {
-                this.hWidth = 30;
-            }
-
-            if (this.hColorG <= 213) {
-                this.hColorG = 213;
-            }
-
-            if (this.hColorB <= 128) {
-                this.hColorB = 128;
-            }
-        }
-
-        if ((this.currentCount > 10) && (this.currentCount <= 11)) {
-            this.hWidth -= 5;
-
-            if (this.hWidth <= 0) {
-                this.hWidth = 0;
-            }
-        }
+        this.hxPos = this.xPos - this.hWidth / 2;
+        this.hyPos = this.yPos + 40;
     }
 
     move() {
@@ -597,14 +572,6 @@ class enemy2 {
     }
 
     // GETTERS
-
-    getCount() {
-        return this.currentCount;
-    }
-
-    addCount(newCount) {
-        this.currentCount += newCount;
-    }
 
     getxPos() {
         return this.xPos;
@@ -636,7 +603,7 @@ ENEMY NUMBER THREE
 
 class enemy3 {
 
-    constructor(alt_x, alt_y, speed_) {
+    constructor(alt_x, alt_y, speed_, curHealth, maxHealth) {
         this.width = 80;
         this.height = 80;
 
@@ -651,15 +618,17 @@ class enemy3 {
 
         this.currentCount = 0;
 
-        this.hxPos = this.xPos;
-        this.hyPos = this.yPos + 50;
+        this.hxPos = this.xPos - this.hWidth / 2;
+        this.hyPos = this.yPos + 40;
         this.hWidth = 80;
         this.hHeight = 10;
         
         this.hColorR = 144;
         this.hColorG = 238;
         this.hColorB = 144;
-
+        
+        this.curHealth = curHealth;
+        this.maxHealth = maxHealth;
     }
 
     display() {
@@ -667,41 +636,14 @@ class enemy3 {
     }
 
     displayHealthBars() {
+        rectMode(CORNER)
         fill(this.hColorR, this.hColorG, this.hColorB)
-        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight);
+        rect(this.hxPos, this.hyPos, map(this.curHealth, 0, this.maxHealth, 0, this.hWidth), this.hHeight);
     }
 
     updateHealthBars() {
-        this.hxPos = this.xPos;
-        this.hyPos = this.yPos + 50;
-
-        if ((this.currentCount >= 1) && (this.currentCount <= 10)) {
-            this.hWidth -= 5;
-
-            this.hColorR += 10;
-            this.hColorG -= 5;
-            this.hColorB -= 5;
-
-            if (this.hWidth <= 30) {
-                this.hWidth = 30;
-            }
-
-            if (this.hColorG <= 213) {
-                this.hColorG = 213;
-            }
-
-            if (this.hColorB <= 128) {
-                this.hColorB = 128;
-            }
-        }
-
-        if ((this.currentCount > 10) && (this.currentCount <= 11)) {
-            this.hWidth -= 5;
-
-            if (this.hWidth <= 0) {
-                this.hWidth = 0;
-            }
-        }
+        this.hxPos = this.xPos - this.hWidth / 2;
+        this.hyPos = this.yPos + 40;
     }
 
     move() {
@@ -710,14 +652,6 @@ class enemy3 {
     }
 
     // GETTERS
-
-    getCount() {
-        return this.currentCount;
-    }
-
-    addCount(newCount) {
-        this.currentCount += newCount;
-    }
 
     getxPos() {
         return this.xPos;
@@ -749,7 +683,7 @@ ENEMY NUMBER FOUR
 
 class enemy4 {
 
-    constructor(alt_x, alt_y, speed_) {
+    constructor(alt_x, alt_y, speed_, curHealth, maxHealth) {
         this.width = 80;
         this.height = 80;
 
@@ -764,8 +698,8 @@ class enemy4 {
 
         this.currentCount = 0;
 
-        this.hxPos = this.xPos;
-        this.hyPos = this.yPos + 50;
+        this.hxPos = this.xPos - this.hWidth / 2;
+        this.hyPos = this.yPos + 40;
         this.hWidth = 80;
         this.hHeight = 10;
         
@@ -773,6 +707,8 @@ class enemy4 {
         this.hColorG = 238;
         this.hColorB = 144;
 
+        this.curHealth = curHealth;
+        this.maxHealth = maxHealth;
     }
 
     display() {
@@ -780,41 +716,14 @@ class enemy4 {
     }
 
     displayHealthBars() {
+        rectMode(CORNER)
         fill(this.hColorR, this.hColorG, this.hColorB)
-        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight);
+        rect(this.hxPos, this.hyPos, map(this.curHealth, 0, this.maxHealth, 0, this.hWidth), this.hHeight);
     }
 
     updateHealthBars() {
-        this.hxPos = this.xPos;
-        this.hyPos = this.yPos + 50;
-
-        if ((this.currentCount >= 1) && (this.currentCount <= 10)) {
-            this.hWidth -= 5;
-
-            this.hColorR += 10;
-            this.hColorG -= 5;
-            this.hColorB -= 5;
-
-            if (this.hWidth <= 30) {
-                this.hWidth = 30;
-            }
-
-            if (this.hColorG <= 213) {
-                this.hColorG = 213;
-            }
-
-            if (this.hColorB <= 128) {
-                this.hColorB = 128;
-            }
-        }
-
-        if ((this.currentCount > 10) && (this.currentCount <= 11)) {
-            this.hWidth -= 5;
-
-            if (this.hWidth <= 0) {
-                this.hWidth = 0;
-            }
-        }
+        this.hxPos = this.xPos - this.hWidth / 2;
+        this.hyPos = this.yPos + 40;
     }
 
     move() {
@@ -823,14 +732,6 @@ class enemy4 {
     }
 
     // GETTERS
-
-    getCount() {
-        return this.currentCount;
-    }
-
-    addCount(newCount) {
-        this.currentCount += newCount;
-    }
 
     getxPos() {
         return this.xPos;
@@ -862,7 +763,7 @@ ENEMY NUMBER FIVE
 
 class enemy5 {
 
-    constructor(alt_x, alt_y, speed_) {
+    constructor(alt_x, alt_y, speed_, curHealth, maxHealth) {
         this.width = 80;
         this.height = 80;
 
@@ -877,8 +778,8 @@ class enemy5 {
 
         this.currentCount = 0;
 
-        this.hxPos = this.xPos;
-        this.hyPos = this.yPos + 50;
+        this.hxPos = this.xPos - this.hWidth / 2;
+        this.hyPos = this.yPos + 40;
         this.hWidth = 80;
         this.hHeight = 10;
         
@@ -886,6 +787,8 @@ class enemy5 {
         this.hColorG = 238;
         this.hColorB = 144;
 
+        this.curHealth = curHealth;
+        this.maxHealth = maxHealth;
     }
 
     display() {
@@ -893,41 +796,14 @@ class enemy5 {
     }
 
     displayHealthBars() {
+        rectMode(CORNER)
         fill(this.hColorR, this.hColorG, this.hColorB)
-        rect(this.hxPos, this.hyPos, this.hWidth, this.hHeight);
+        rect(this.hxPos, this.hyPos, map(this.curHealth, 0, this.maxHealth, 0, this.hWidth), this.hHeight);
     }
 
     updateHealthBars() {
-        this.hxPos = this.xPos;
-        this.hyPos = this.yPos + 50;
-
-        if ((this.currentCount >= 1) && (this.currentCount <= 10)) {
-            this.hWidth -= 5;
-
-            this.hColorR += 10;
-            this.hColorG -= 5;
-            this.hColorB -= 5;
-
-            if (this.hWidth <= 30) {
-                this.hWidth = 30;
-            }
-
-            if (this.hColorG <= 213) {
-                this.hColorG = 213;
-            }
-
-            if (this.hColorB <= 128) {
-                this.hColorB = 128;
-            }
-        }
-
-        if ((this.currentCount > 10) && (this.currentCount <= 11)) {
-            this.hWidth -= 5;
-
-            if (this.hWidth <= 0) {
-                this.hWidth = 0;
-            }
-        }
+        this.hxPos = this.xPos - this.hWidth / 2;
+        this.hyPos = this.yPos + 40;
     }
 
     move() {
@@ -936,14 +812,6 @@ class enemy5 {
     }
 
     // GETTERS
-
-    getCount() {
-        return this.currentCount;
-    }
-
-    addCount(newCount) {
-        this.currentCount += newCount;
-    }
 
     getxPos() {
         return this.xPos;
