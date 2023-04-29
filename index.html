@@ -542,21 +542,20 @@
                         bullets[j].display();
                         bullets[j].move();
 
-                        //if (bullets[j].yPos < 0) {
-                            //bullets.splice(j, 1);
-                        //}
-
                         for (var i = snakeAmount.length - 1; i >= 0; i--) {
 
                             var hit = collideRectRect(bullets[j].getxPos(), bullets[j].getyPos(), bullets[j].getWidth(), bullets[j].getHeight(), snakeAmount[i].getxPos(), snakeAmount[i].getyPos(), snakeAmount[i].getWidth(), snakeAmount[i].getHeight());
 
                             if (hit == true) {
                                 snakeAmount[i].curHealth -= dmgPerHit;
-                                soundEffect1.play();
 
                                 if (snakeAmount[i].curHealth <= 0) { // no more addcount, getcount, new system is easier to tweak
                                     counter++;
                                     document.getElementById("snakesValue").innerText = counter;
+
+                                    soundEffect1.setVolume(0.3)
+                                    soundEffect1.play();
+                                    soundEffect1.setLoop(false)
 
                                     bullets.splice(j, 1);                          
                                     snakeAmount.splice(i, 1);
@@ -584,11 +583,14 @@
                         
                             if (slimeHit == true) {
                                 slimeAmount[sli].curHealth -= dmgPerHit;
-                                soundEffect1.play();
 
                                 if (slimeAmount[sli].curHealth <= 0) {
                                     counter++;
                                     document.getElementById("snakesValue").innerText = counter;
+
+                                    soundEffect1.setVolume(0.3)
+                                    soundEffect1.play();
+                                    soundEffect1.setLoop(false)
 
                                     bullets.splice(h, 1);
                                     slimeAmount.splice(sli, 1);
@@ -615,11 +617,14 @@
                         
                             if (blobHit == true) {
                                 blobAmount[blo].curHealth -= dmgPerHit;
-                                soundEffect1.play();
 
                                 if (blobAmount[blo].curHealth <= 0) {
                                     counter++;
                                     document.getElementById("snakesValue").innerText = counter;
+
+                                    soundEffect1.setVolume(0.3)
+                                    soundEffect1.play();
+                                    soundEffect1.setLoop(false)
 
                                     bullets.splice(q, 1);
                                     blobAmount.splice(blo, 1);
@@ -646,11 +651,14 @@
                         
                             if (golemHit == true) {
                                 golemAmount[gol].curHealth -= dmgPerHit;
-                                soundEffect1.play();
 
                                 if (golemAmount[gol].curHealth <= 0) {
                                     counter++;
                                     document.getElementById("snakesValue").innerText = counter;
+
+                                    soundEffect1.setVolume(0.3)
+                                    soundEffect1.play();
+                                    soundEffect1.setLoop(false)
 
                                     bullets.splice(s, 1);
                                     golemAmount.splice(gol, 1);
@@ -677,11 +685,14 @@
                         
                             if (dragonHit == true) {
                                 dragonAmount[dra].curHealth -= dmgPerHit;
-                                soundEffect1.play();
 
                                 if (dragonAmount[dra].curHealth <= 0) {
                                     counter++;
                                     document.getElementById("snakesValue").innerText = counter;
+
+                                    soundEffect1.setVolume(0.3)
+                                    soundEffect1.play();
+                                    soundEffect1.setLoop(false)
 
                                     bullets.splice(u, 1);
                                     dragonAmount.splice(dra, 1);
